@@ -248,55 +248,43 @@ class ApiService {
         });
     }
 
-    // ==================== CONTACT METHODS - UPDATED WITH AUTH ====================
+    // ==================== CONTACT METHODS - SIMPLE VERSION ====================
     async getContactSubmissions() {
         try {
-            const response = await this.request('api/contact');
-            console.log('📧 Contact submissions response:', response);
-            return response;
+            const response = await fetch(`${API_BASE_URL}/api/contact`);
+            return await response.json();
         } catch (error) {
-            console.error('❌ Failed to fetch contact submissions:', error);
-            // Return empty array instead of throwing to prevent admin page crash
-            return { success: true, data: [], count: 0 };
+            console.error('Error fetching contact submissions:', error);
+            return { success: false, error: 'Failed to fetch contact submissions' };
         }
     }
 
     async deleteContact(id) {
         try {
-            console.log(`🗑️ Attempting to delete contact submission: ${id}`);
-            const response = await this.request(`api/contact/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/contact/${id}`, {
                 method: 'DELETE',
             });
-            console.log('✅ Delete contact response:', response);
-            return response;
+            return await response.json();
         } catch (error) {
-            console.error('❌ Failed to delete contact submission:', error);
-            return { success: false, error: error.message };
+            console.error('Error deleting contact submission:', error);
+            return { success: false, error: 'Failed to delete contact submission' };
         }
     }
 
     async submitContact(formData) {
         try {
-            const response = await this.request('api/contact', {
+            const response = await fetch(`${API_BASE_URL}/api/contact`, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify(formData),
             });
-            return response;
+            return await response.json();
         } catch (error) {
             console.error('Error submitting contact form:', error);
             return { success: false, error: 'Failed to submit contact form' };
         }
-    }
-
-    async getContactById(contactId) {
-        return this.request(`api/contact/${contactId}`);
-    }
-
-    async updateContactStatus(contactId, status) {
-        return this.request(`api/contact/${contactId}/status`, {
-            method: 'PATCH',
-            body: JSON.stringify({ status }),
-        });
     }
     // ==================== END OF CONTACT METHODS ====================
 

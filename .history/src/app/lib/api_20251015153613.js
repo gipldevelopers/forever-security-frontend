@@ -201,38 +201,57 @@ class ApiService {
         });
     }
 
-    // Gallery methods - simplified
-    async getGallery() {
-        return this.request('api/gallery');
-    }
+// Gallery Albums methods
+async getAlbums() {
+    return this.request('api/gallery/albums');
+}
 
-    async deleteImage(imageId) {
-        return this.request(`api/gallery/${imageId}`, {
-            method: 'DELETE',
-        });
-    }
+async getAlbumById(albumId) {
+    return this.request(`api/gallery/albums/${albumId}`);
+}
 
+async createAlbum(albumData) {
+    return this.request('api/gallery/albums', {
+        method: 'POST',
+        body: albumData,
+    });
+}
+
+async deleteAlbum(albumId) {
+    return this.request(`api/gallery/albums/${albumId}`, {
+        method: 'DELETE',
+    });
+}
+
+// Gallery Images methods
+async addImageToAlbum(imageData) {
+    return this.request('api/gallery/images', {
+        method: 'POST',
+        body: imageData,
+    });
+}
+
+async deleteImage(imageId) {
+    return this.request(`api/gallery/images/${imageId}`, {
+        method: 'DELETE',
+    });
+}
     // Testimonials methods
     async getTestimonials() {
         return this.request('api/testimonials');
     }
 
-    async getTestimonialById(testimonialId) {
-        return this.request(`api/testimonials/${testimonialId}`);
-    }
-
     async createTestimonial(testimonialData) {
-        // Note: This will be handled with FormData in the component
         return this.request('api/testimonials', {
             method: 'POST',
-            body: testimonialData, // FormData object
+            body: JSON.stringify(testimonialData),
         });
     }
 
     async updateTestimonial(testimonialId, testimonialData) {
         return this.request(`api/testimonials/${testimonialId}`, {
             method: 'PUT',
-            body: testimonialData, // FormData object
+            body: JSON.stringify(testimonialData),
         });
     }
 
@@ -242,63 +261,27 @@ class ApiService {
         });
     }
 
-    async toggleTestimonialStatus(testimonialId) {
-        return this.request(`api/testimonials/${testimonialId}/toggle`, {
-            method: 'PATCH',
-        });
-    }
-
-    // ==================== CONTACT METHODS - UPDATED WITH AUTH ====================
+    // Contact methods
     async getContactSubmissions() {
-        try {
-            const response = await this.request('api/contact');
-            console.log('📧 Contact submissions response:', response);
-            return response;
-        } catch (error) {
-            console.error('❌ Failed to fetch contact submissions:', error);
-            // Return empty array instead of throwing to prevent admin page crash
-            return { success: true, data: [], count: 0 };
-        }
-    }
-
-    async deleteContact(id) {
-        try {
-            console.log(`🗑️ Attempting to delete contact submission: ${id}`);
-            const response = await this.request(`api/contact/${id}`, {
-                method: 'DELETE',
-            });
-            console.log('✅ Delete contact response:', response);
-            return response;
-        } catch (error) {
-            console.error('❌ Failed to delete contact submission:', error);
-            return { success: false, error: error.message };
-        }
-    }
-
-    async submitContact(formData) {
-        try {
-            const response = await this.request('api/contact', {
-                method: 'POST',
-                body: JSON.stringify(formData),
-            });
-            return response;
-        } catch (error) {
-            console.error('Error submitting contact form:', error);
-            return { success: false, error: 'Failed to submit contact form' };
-        }
+        return this.request('api/contact');
     }
 
     async getContactById(contactId) {
         return this.request(`api/contact/${contactId}`);
     }
 
-    async updateContactStatus(contactId, status) {
-        return this.request(`api/contact/${contactId}/status`, {
-            method: 'PATCH',
-            body: JSON.stringify({ status }),
+    async submitContact(formData) {
+        return this.request('api/contact', {
+            method: 'POST',
+            body: JSON.stringify(formData),
         });
     }
-    // ==================== END OF CONTACT METHODS ====================
+
+    async deleteContact(contactId) {
+        return this.request(`api/contact/${contactId}`, {
+            method: 'DELETE',
+        });
+    }
 
     // Health check
     async healthCheck() {

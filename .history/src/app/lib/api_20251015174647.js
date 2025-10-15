@@ -248,7 +248,7 @@ class ApiService {
         });
     }
 
-    // ==================== CONTACT METHODS - UPDATED WITH AUTH ====================
+    // ==================== CONTACT METHODS - UPDATED ====================
     async getContactSubmissions() {
         try {
             const response = await this.request('api/contact');
@@ -261,35 +261,29 @@ class ApiService {
         }
     }
 
-    async deleteContact(id) {
+    async getContactById(contactId) {
+        return this.request(`api/contact/${contactId}`);
+    }
+
+    async submitContact(formData) {
+        return this.request('api/contact', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+        });
+    }
+
+    async deleteContact(contactId) {
         try {
-            console.log(`🗑️ Attempting to delete contact submission: ${id}`);
-            const response = await this.request(`api/contact/${id}`, {
+            console.log(`🗑️ Attempting to delete contact submission: ${contactId}`);
+            const response = await this.request(`api/contact/${contactId}`, {
                 method: 'DELETE',
             });
             console.log('✅ Delete contact response:', response);
             return response;
         } catch (error) {
             console.error('❌ Failed to delete contact submission:', error);
-            return { success: false, error: error.message };
+            throw error; // Re-throw to handle in component
         }
-    }
-
-    async submitContact(formData) {
-        try {
-            const response = await this.request('api/contact', {
-                method: 'POST',
-                body: JSON.stringify(formData),
-            });
-            return response;
-        } catch (error) {
-            console.error('Error submitting contact form:', error);
-            return { success: false, error: 'Failed to submit contact form' };
-        }
-    }
-
-    async getContactById(contactId) {
-        return this.request(`api/contact/${contactId}`);
     }
 
     async updateContactStatus(contactId, status) {

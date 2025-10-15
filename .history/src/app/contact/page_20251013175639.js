@@ -321,41 +321,16 @@ export default function ContactPage() {
     }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  
-  try {
-    const response = await fetch('http://localhost:5000/api/contact', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      setIsSubmitted(true);
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
-      });
-    } else {
-      alert(result.error || 'Failed to send message. Please try again.');
-    }
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    alert('Network error. Please check your connection and try again.');
-  } finally {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
     setIsSubmitting(false);
-  }
-};
+    setIsSubmitted(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">

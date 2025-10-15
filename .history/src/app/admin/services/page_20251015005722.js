@@ -257,7 +257,50 @@ export default function Services() {
         )}
       </div>
 
-     
+      {/* Quick Stats */}
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <div className="flex items-center">
+            <div className="bg-blue-100 p-2 rounded-lg">
+              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-blue-900">Total Services</p>
+              <p className="text-2xl font-bold text-blue-600">{services.length}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+          <div className="flex items-center">
+            <div className="bg-green-100 p-2 rounded-lg">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-green-900">Active Services</p>
+              <p className="text-2xl font-bold text-green-600">{services.length}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+          <div className="flex items-center">
+            <div className="bg-purple-100 p-2 rounded-lg">
+              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-purple-900">Filtered Results</p>
+              <p className="text-2xl font-bold text-purple-600">{filteredServices.length}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
