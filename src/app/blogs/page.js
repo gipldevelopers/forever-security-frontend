@@ -1,0 +1,480 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { ChevronRight, Calendar, User, Clock, ArrowLeft } from "lucide-react";
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.03,
+    },
+  },
+};
+
+const letterVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+    },
+  },
+};
+
+const highlightVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: "backOut",
+    },
+  },
+};
+
+// Split text into letters for animation
+const splitText = (text) => {
+  return text.split("").map((char, index) => (
+    <motion.span key={index} variants={letterVariants} className="inline-block">
+      {char === " " ? "\u00A0" : char}
+    </motion.span>
+  ));
+};
+
+// Animated Title Component
+const AnimatedTitle = ({ title, highlight }) => {
+  const parts = title.split(highlight);
+
+  return (
+    <motion.span
+      initial="hidden"
+      whileInView="visible"
+      variants={containerVariants}
+      viewport={{ once: true, margin: "-30px" }}
+      className="inline-block"
+    >
+      {/* First part */}
+      {splitText(parts[0])}
+
+      {/* Highlighted part */}
+      <motion.span
+        variants={highlightVariants}
+        className="text-[#1f8fce] inline-block"
+      >
+        {splitText(highlight)}
+      </motion.span>
+
+      {/* Second part if exists */}
+      {parts[1] && splitText(parts[1])}
+    </motion.span>
+  );
+};
+
+// Blog Data
+const blogPosts = [
+  {
+    id: 1,
+    title: "Top 10 Home Security Tips for Modern Families",
+    excerpt: "Discover essential security strategies to protect your home and loved ones with the latest technology and smart practices.",
+    description: "Learn about the most effective home security measures that every modern family should implement to ensure complete protection and peace of mind.",
+    content: `
+      <p>Home security is more important than ever in today's world. With advancements in technology, there are numerous ways to protect your home and loved ones. In this comprehensive guide, we'll explore the top 10 home security tips that every modern family should consider.</p>
+      
+      <h3>1. Smart Home Integration</h3>
+      <p>Integrate your security system with smart home devices for seamless control and monitoring.</p>
+      
+      <h3>2. Professional Monitoring</h3>
+      <p>24/7 professional monitoring ensures immediate response to any security breaches.</p>
+      
+      <h3>3. Regular System Updates</h3>
+      <p>Keep your security systems updated with the latest software and firmware.</p>
+    `,
+    category: "Home Security",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    author: "John Security",
+    date: "2024-01-15",
+    readTime: "5 min read",
+    slug: "top-10-home-security-tips",
+    featured: true
+  },
+  {
+    id: 2,
+    title: "Business Security: Complete Asset Protection Guide",
+    excerpt: "Comprehensive strategies to secure your business premises, protect sensitive data, and ensure employee safety.",
+    description: "A complete guide to business security covering physical security, cybersecurity, and employee safety protocols.",
+    content: `
+      <p>Business security requires a multi-layered approach to protect your assets, data, and employees. This guide covers everything you need to know.</p>
+      
+      <h3>Physical Security Measures</h3>
+      <p>Implement access control systems, surveillance cameras, and security personnel.</p>
+      
+      <h3>Cybersecurity Protocols</h3>
+      <p>Protect your digital assets with robust cybersecurity measures and employee training.</p>
+    `,
+    category: "Business Security",
+    image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    author: "Sarah Johnson",
+    date: "2024-01-12",
+    readTime: "7 min read",
+    slug: "business-security-asset-protection",
+    featured: true
+  },
+  {
+    id: 3,
+    title: "Cybersecurity Trends 2024: Stay Ahead of Threats",
+    excerpt: "Explore the latest cybersecurity trends and learn how to protect your digital assets from emerging threats.",
+    description: "Stay updated with the latest cybersecurity trends and learn how to protect your organization from new threats.",
+    content: `
+      <p>Cybersecurity is evolving rapidly. Stay ahead of threats with these emerging trends and best practices for 2024.</p>
+      
+      <h3>AI-Powered Security</h3>
+      <p>Artificial intelligence is revolutionizing threat detection and response.</p>
+      
+      <h3>Zero Trust Architecture</h3>
+      <p>Implement zero trust principles for enhanced security posture.</p>
+    `,
+    category: "Cybersecurity",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    author: "Mike Chen",
+    date: "2024-01-10",
+    readTime: "6 min read",
+    slug: "cybersecurity-trends-2024",
+    featured: true
+  },
+  {
+    id: 4,
+    title: "Emergency Response Planning for Businesses",
+    excerpt: "Learn how to create effective emergency response plans to protect your business during crises.",
+    description: "Essential guide to developing comprehensive emergency response plans for businesses of all sizes.",
+    category: "Emergency Response",
+    image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    author: "Lisa Rodriguez",
+    date: "2024-01-08",
+    readTime: "8 min read",
+    slug: "emergency-response-planning-businesses",
+    featured: false
+  },
+  {
+    id: 5,
+    title: "Access Control Systems: Modern Solutions",
+    excerpt: "Discover the latest access control technologies and how they can enhance your security infrastructure.",
+    description: "Explore modern access control solutions and their benefits for various security applications.",
+    category: "Access Control",
+    image: "https://images.unsplash.com/photo-1560421682-2db0c1312831?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    author: "David Wilson",
+    date: "2024-01-05",
+    readTime: "5 min read",
+    slug: "access-control-systems-modern-solutions",
+    featured: false
+  },
+  {
+    id: 6,
+    title: "Security Consulting: When Do You Need It?",
+    excerpt: "Understand when and why your organization might benefit from professional security consulting services.",
+    description: "Learn about the benefits of security consulting and when to seek professional advice.",
+    category: "Security Consulting",
+    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    author: "Emily Parker",
+    date: "2024-01-03",
+    readTime: "4 min read",
+    slug: "security-consulting-when-needed",
+    featured: false
+  }
+];
+
+// Date formatting function to avoid hydration mismatch
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+// BlogCard Component
+const BlogCard = ({ post, index }) => {
+  const [formattedDate, setFormattedDate] = useState('');
+
+  useEffect(() => {
+    setFormattedDate(formatDate(post.date));
+  }, [post.date]);
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ delay: index * 0.1, duration: 0.6 }}
+      className="group bg-white border border-blue-200 rounded-xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer shadow-lg flex flex-col h-full"
+    >
+      <div className="flex flex-col h-full">
+        {/* Image */}
+        <div className="relative rounded-lg overflow-hidden mb-4 aspect-video">
+          <Image
+            src={post.image}
+            alt={post.title}
+            width={400}
+            height={250}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          {/* Category Badge */}
+          <div className="absolute top-3 left-3 z-10">
+            <span className="bg-white/95 text-[#1f8fce] px-3 py-1 rounded-full text-sm font-semibold font-poppins backdrop-blur-sm">
+              {post.category}
+            </span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="space-y-3 flex-1">
+          <Link href={`/blogs/${post.slug}`} className="block">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 font-montserrat group-hover:text-[#1f8fce] transition-colors duration-300 line-clamp-2">
+              {post.title}
+            </h3>
+          </Link>
+          <p className="text-gray-600 text-sm sm:text-base font-poppins leading-relaxed line-clamp-3">
+            {post.excerpt}
+          </p>
+        </div>
+
+        {/* Meta Information */}
+        <div className="flex items-center justify-between text-gray-500 text-xs sm:text-sm mt-4 pt-4 border-t border-blue-200">
+          <div className="flex items-center gap-2">
+            <User className="w-4 h-4" />
+            <span className="font-poppins">{post.author}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4" />
+            <span className="font-poppins">{formattedDate || 'Loading...'}</span>
+          </div>
+        </div>
+
+        {/* Read Time */}
+        <div className="flex items-center gap-2 text-gray-500 text-xs mt-2">
+          <Clock className="w-3 h-3" />
+          <span className="font-poppins">{post.readTime}</span>
+        </div>
+
+        {/* Read More */}
+        <div className="flex gap-3 pt-4 mt-4 border-t border-dashed border-blue-200">
+          <Link
+            href={`/blogs/${post.slug}`}
+            className="inline-flex items-center gap-1 text-[#1f8fce] font-semibold hover:text-[#167aac] border border-[#1f8fce] hover:border-[#167aac] px-4 sm:px-6 py-2 rounded-md transition-all duration-300 text-sm sm:text-base font-poppins whitespace-nowrap"
+          >
+            Read More
+            <ChevronRight className="ml-1 size-4 sm:size-5" />
+          </Link>
+        </div>
+      </div>
+    </motion.article>
+  );
+};
+
+export default function BlogPage() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Creative Inner Banner */}
+      <section className="relative pt-10 pb-8 sm:pt-20 sm:pb-16 lg:pt-32 lg:pb-24 h-auto min-h-[45vh] sm:min-h-[70vh] lg:min-h-[500px] bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce] overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-4 left-4 w-12 h-12 sm:top-6 sm:left-6 sm:w-16 sm:h-16 lg:top-10 lg:left-10 lg:w-20 lg:h-20 bg-white/10 rounded-full blur-lg sm:blur-xl"></div>
+          <div className="absolute top-1/3 right-4 w-16 h-16 sm:top-1/2 sm:right-6 sm:w-20 sm:h-20 lg:top-1/2 lg:right-20 lg:w-32 lg:h-32 bg-[#1f8fce]/20 rounded-full blur-lg sm:blur-xl lg:blur-2xl"></div>
+          <div className="absolute bottom-4 left-1/4 w-12 h-12 sm:bottom-6 sm:left-1/3 sm:w-16 sm:h-16 lg:bottom-10 lg:left-1/3 lg:w-24 lg:h-24 bg-white/5 rounded-full blur-md sm:blur-lg"></div>
+          <div className="absolute top-6 right-1/4 w-10 h-10 sm:top-8 sm:right-1/4 sm:w-12 sm:h-12 lg:top-20 lg:right-1/4 lg:w-16 lg:h-16 bg-[#1f8fce]/30 rounded-full blur-md sm:blur-lg"></div>
+        </div>
+
+        {/* Main Content */}
+        <div className="relative z-10 h-full flex items-center justify-center text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full pt-12 pb-0 sm:py-0"
+          >
+            {/* Breadcrumb */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="flex justify-center items-center space-x-2 text-white/80 text-xs sm:text-sm md:text-base mb-3 sm:mb-6 font-poppins"
+            >
+              <Link
+                href="/"
+                className="hover:text-white transition-colors duration-300"
+              >
+                Home
+              </Link>
+              <span>/</span>
+              <span className="text-white font-semibold">Blogs</span>
+            </motion.div>
+
+            {/* Main Title with Creative Typography */}
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold text-white font-montserrat mb-3 sm:mb-6"
+            >
+              <motion.span
+                initial="hidden"
+                whileInView="visible"
+                variants={containerVariants}
+                viewport={{ once: true, margin: "-30px" }}
+                className="inline-block"
+              >
+                {splitText("Our ")}
+                <motion.span
+                  variants={highlightVariants}
+                  className="text-[#1f8fce] inline-block"
+                >
+                  {splitText("Blogs")}
+                </motion.span>
+              </motion.span>
+            </motion.h1>
+
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="text-sm sm:text-lg md:text-xl lg:text-2xl text-white/90 font-poppins max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-6 px-2 sm:px-0"
+            >
+              Stay informed with expert security insights, industry trends, and practical tips to protect what matters most
+            </motion.p>
+
+            {/* Animated CTA Button */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+              className="mt-4 sm:mt-8"
+            >
+              <Link
+                href="#blog-grid"
+                className="rounded-md px-8 sm:px-10 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-sm sm:text-base whitespace-nowrap"
+              >
+                <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+                <span className="relative transition duration-300 ease font-semibold">
+                  Explore Articles
+                </span>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Blog Grid Section with Blue/Indigo Background */}
+      <section id="blog-grid" className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 font-montserrat mb-4">
+              <AnimatedTitle
+                title="Latest Security Insights"
+                highlight="Security"
+              />
+            </h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-30px" }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto"
+            >
+              Discover expert articles, security trends, and practical tips to enhance your protection strategies
+            </motion.p>
+          </div>
+
+          {/* Blog Grid Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {blogPosts.map((post, index) => (
+              <BlogCard
+                key={post.id}
+                post={post}
+                index={index}
+              />
+            ))}
+          </div>
+
+          
+        </div>
+      </section>
+
+      {/* CTA Section - Blog Focused */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white font-montserrat mb-4">
+              <AnimatedTitle
+                title="Stay Updated with Security Insights"
+                highlight="Security Insights"
+              />
+            </h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-white/90 font-poppins text-lg sm:text-xl mb-8 max-w-2xl mx-auto"
+            >
+              Get the latest security news, tips, and expert advice delivered to your inbox
+            </motion.p>
+
+            {/* Buttons inline on mobile and desktop */}
+            <motion.div
+              className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full max-w-2xl mx-auto"
+            >
+              {/* Primary Button: Subscribe to Newsletter */}
+              <Link
+                href="/contact"
+                className="w-full sm:w-auto rounded-md px-8 sm:px-12 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base whitespace-nowrap min-w-[200px]"
+              >
+                <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+                <span className="relative transition duration-300 ease font-semibold">
+                  Subscribe to Newsletter
+                </span>
+              </Link>
+
+              {/* Secondary Button: Contact Us */}
+              <Link
+                href="/contact"
+                className="w-full sm:w-auto rounded-md px-8 sm:px-12 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-transparent border-white text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base whitespace-nowrap min-w-[200px]"
+              >
+                <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+                <span className="relative transition duration-300 ease font-semibold">
+                  Contact Us
+                </span>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+    </div>
+  );
+}
