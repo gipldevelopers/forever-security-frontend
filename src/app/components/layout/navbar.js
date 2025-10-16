@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation'; // <-- Import usePathname
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname(); // <-- Get the current path
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,6 +97,17 @@ export default function Navbar() {
     { href: "/gallery", label: "Gallery" }, 
   ];
 
+  // Helper function to check if a link is active
+  const isActive = (href) => {
+    // Special handling for the root path
+    if (href === "/") {
+      return pathname === href;
+    }
+    // Check if the current pathname starts with the item's href for nested routes
+    return pathname.startsWith(href);
+  };
+
+
   return (
     <>
       <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
@@ -123,30 +136,40 @@ export default function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-6">
-              {navItems.map((item) => (
-                <Link 
-                  key={item.href}
-                  href={item.href} 
-                  className={`relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 group ${
-                    isScrolled 
-                      ? 'text-gray-800 hover:text-[#1f8fce]' 
-                      : 'text-white hover:text-blue-200'
-                  }`}
-                >
-                  <span className="relative z-10">{item.label}</span>
-                  <span className={`absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${
-                    isScrolled ? 'bg-[#1f8fce]' : 'bg-white'
-                  }`}></span>
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const active = isActive(item.href); // <-- Check active status
+                return (
+                  <Link 
+                    key={item.href}
+                    href={item.href} 
+                    className={`relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 group ${
+                      // Apply active styles or default hover styles
+                      active
+                        ? 'text-[#1f8fce]' // Active Text Color
+                        : isScrolled 
+                          ? 'text-gray-800 hover:text-[#1f8fce]' 
+                          : 'text-white hover:text-blue-200'
+                    }`}
+                  >
+                    <span className="relative z-10">{item.label}</span>
+                    {/* Active/Hover Underline */}
+                    <span className={`absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${
+                      // If active, always show the underline (w-full)
+                      active 
+                        ? 'w-full bg-[#1f8fce]' 
+                        : isScrolled ? 'bg-[#1f8fce]' : 'bg-white'
+                    }`}></span>
+                  </Link>
+                );
+              })}
 
               {/* Contact Us Button (formerly "Free Enquiry") */}
               <Link 
                 href="/contact" 
                 className={`rounded-md px-5 py-2.5 m-1 overflow-hidden relative group cursor-pointer border-2 font-medium transition-all duration-300 ${
-                  isScrolled 
-                    ? 'bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-transparent hover:border-[#1f8fce] hover:text-[#1f8fce]' 
-                    : 'bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-transparent hover:border-[#1f8fce] hover:text-[#1f8fce]'
+                  isActive("/contact") // <-- Check active for button
+                    ? 'bg-[#1f8fce] border-[#1f8fce] text-white' // Active style
+                    : 'bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-transparent hover:border-[#1f8fce] hover:text-[#1f8fce]' 
                 }`}
               >
                 <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
@@ -255,31 +278,42 @@ export default function Navbar() {
                   }
                 `}</style>
                 <nav className="space-y-2">
-                  {navItems.map((item, index) => (
-                    <motion.div
-                      key={item.href}
-                      variants={menuItemVariants}
-                      initial="closed"
-                      animate="open"
-                      exit="closed"
-                      transition={{ 
-                        delay: index * 0.1,
-                        duration: 0.4,
-                        ease: "easeOut"
-                      }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center px-4 py-3 text-lg font-medium text-gray-700 hover:text-[#1f8fce] hover:bg-blue-50 rounded-xl transition-all duration-300 group"
+                  {navItems.map((item, index) => {
+                    const active = isActive(item.href); // <-- Check active status
+                    return (
+                      <motion.div
+                        key={item.href}
+                        variants={menuItemVariants}
+                        initial="closed"
+                        animate="open"
+                        exit="closed"
+                        transition={{ 
+                          delay: index * 0.1,
+                          duration: 0.4,
+                          ease: "easeOut"
+                        }}
                       >
-                        <span className="relative">
-                          {item.label}
-                          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#1f8fce] transition-all duration-300 group-hover:w-full"></span>
-                        </span>
-                      </Link>
-                    </motion.div>
-                  ))}
+                        <Link
+                          href={item.href}
+                          onClick={() => setIsOpen(false)}
+                          className={`flex items-center px-4 py-3 text-lg font-medium rounded-xl transition-all duration-300 group ${
+                            // Apply active styles
+                            active 
+                              ? 'text-white bg-[#1f8fce]' // Active Background and Text
+                              : 'text-gray-700 hover:text-[#1f8fce] hover:bg-blue-50' // Default Hover Styles
+                          }`}
+                        >
+                          <span className="relative">
+                            {item.label}
+                            {/* Active/Hover Underline (Only visible on hover if not active) */}
+                            <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
+                              active ? 'w-full bg-white' : 'w-0 bg-[#1f8fce] group-hover:w-full'
+                            }`}></span>
+                          </span>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
                 </nav>
               </div>
 
@@ -297,7 +331,11 @@ export default function Navbar() {
                   <Link
                     href="/contact" 
                     onClick={() => setIsOpen(false)}
-                    className="rounded-md px-4 py-2.5 overflow-hidden relative group cursor-pointer border-2 font-medium bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-transparent hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center justify-center text-sm"
+                    className={`rounded-md px-4 py-2.5 overflow-hidden relative group cursor-pointer border-2 font-medium transition-all duration-300 inline-flex items-center justify-center text-sm ${
+                      isActive("/contact") // <-- Check active for button
+                        ? 'bg-[#1f8fce] border-[#1f8fce] text-white' // Active style
+                        : 'bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-transparent hover:text-[#1f8fce]'
+                    }`}
                   >
                     <span className="absolute w-48 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-16 bg-white top-1/2 group-hover:h-48 group-hover:-translate-y-24 ease"></span>
                     <span className="relative transition duration-300 ease font-medium">
