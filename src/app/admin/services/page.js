@@ -48,9 +48,12 @@ export default function Services() {
         throw new Error('Failed to fetch services');
       }
       
-      const data = await response.json();
-      setServices(data);
-      setFilteredServices(data);
+      const result = await response.json();
+      
+      // FIX: Extract data from the response
+      const servicesData = result.data || result || [];
+      setServices(servicesData);
+      setFilteredServices(servicesData);
     } catch (error) {
       console.error('Error fetching services:', error);
       setError('Failed to load services. Please check if the backend is running.');
@@ -256,8 +259,6 @@ export default function Services() {
           </div>
         )}
       </div>
-
-     
     </div>
   );
 }

@@ -1,10 +1,19 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { ChevronRight, CheckCircle, Clock, Users, Shield, Star, ArrowLeft } from 'lucide-react';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import {
+  ChevronRight,
+  CheckCircle,
+  Clock,
+  Users,
+  Shield,
+  Star,
+  ArrowLeft,
+} from "lucide-react";
+import { apiService } from "@/app/lib/api";
 
 // Animation variants
 const containerVariants = {
@@ -85,199 +94,12 @@ const AnimatedTitle = ({ title, highlight }) => {
   );
 };
 
-// Service data
-const serviceDetails = {
-  'home-security': {
-    title: "Home Security",
-    description: "Complete home security solutions with alarm systems, CCTV cameras, and smart home integration for ultimate protection.",
-    longDescription: "Our comprehensive home security solutions are designed to protect your family and property 24/7. We combine advanced technology with professional monitoring to ensure your peace of mind. From smart home integration to professional monitoring, we provide end-to-end security solutions tailored to your specific needs.",
-    icon: "🏠",
-    features: [
-      "24/7 Professional Monitoring",
-      "Smart Home Integration",
-      "Mobile App Control",
-      "HD CCTV Cameras",
-      "Motion Detection",
-      "Remote Access",
-      "Emergency Alerts",
-      "Professional Installation"
-    ],
-    benefits: [
-      "Protect your family and belongings",
-      "Reduce home insurance costs",
-      "Remote monitoring from anywhere",
-      "Instant emergency response",
-      "Smart home automation"
-    ],
-    process: [
-      "Free Security Assessment",
-      "Custom System Design",
-      "Professional Installation",
-      "Training & Support",
-      "24/7 Monitoring"
-    ],
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-  },
-  'business-security': {
-    title: "Business Security",
-    description: "Comprehensive security systems for businesses with 24/7 monitoring and advanced threat detection technology.",
-    longDescription: "Protect your business assets, employees, and data with our enterprise-grade security solutions. From access control to surveillance, we've got you covered with state-of-the-art technology and professional implementation.",
-    icon: "🏢",
-    features: [
-      "Access Control Systems",
-      "Video Surveillance",
-      "Intrusion Detection",
-      "Security Personnel",
-      "Fire Safety Systems",
-      "Visitor Management",
-      "Perimeter Security",
-      "24/7 Monitoring"
-    ],
-    benefits: [
-      "Protect valuable assets",
-      "Ensure employee safety",
-      "Meet compliance requirements",
-      "Reduce theft and vandalism",
-      "Improve operational efficiency"
-    ],
-    process: [
-      "Security Risk Assessment",
-      "Custom Solution Design",
-      "Professional Implementation",
-      "Staff Training",
-      "Ongoing Support"
-    ],
-    image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-  },
-  'cybersecurity': {
-    title: "Cybersecurity",
-    description: "Protect your digital assets with advanced cybersecurity solutions, monitoring, and threat prevention systems.",
-    longDescription: "In today's digital world, cybersecurity is essential. Our solutions protect your data, networks, and systems from evolving cyber threats with comprehensive security measures and continuous monitoring.",
-    icon: "🔒",
-    features: [
-      "Network Security",
-      "Data Encryption",
-      "Threat Monitoring",
-      "Incident Response",
-      "Security Audits",
-      "Compliance Management",
-      "Employee Training",
-      "Backup Solutions"
-    ],
-    benefits: [
-      "Protect sensitive data",
-      "Prevent financial losses",
-      "Maintain customer trust",
-      "Meet regulatory requirements",
-      "Business continuity"
-    ],
-    process: [
-      "Security Assessment",
-      "Vulnerability Analysis",
-      "Solution Implementation",
-      "Continuous Monitoring",
-      "Regular Updates"
-    ],
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-  },
-  'security-consulting': {
-    title: "Security Consulting",
-    description: "Expert security assessments and consulting services to identify risks and implement effective solutions.",
-    longDescription: "Our security consultants provide expert advice and strategic planning to help organizations build robust security frameworks tailored to their specific needs and industry requirements.",
-    icon: "📊",
-    features: [
-      "Risk Assessments",
-      "Security Audits",
-      "Compliance Consulting",
-      "Policy Development",
-      "Incident Response Planning",
-      "Security Training",
-      "Vendor Assessment",
-      "Continuous Improvement"
-    ],
-    benefits: [
-      "Expert security guidance",
-      "Cost-effective solutions",
-      "Regulatory compliance",
-      "Improved security posture",
-      "Risk mitigation"
-    ],
-    process: [
-      "Initial Consultation",
-      "Comprehensive Assessment",
-      "Strategy Development",
-      "Implementation Support",
-      "Review & Optimization"
-    ],
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-  },
-  'emergency-response': {
-    title: "Emergency Response",
-    description: "Rapid response teams available 24/7 for emergency security situations and immediate threat resolution.",
-    longDescription: "When seconds matter, our emergency response teams are ready to act. We provide immediate assistance for security emergencies of all types with trained professionals and coordinated response protocols.",
-    icon: "🚨",
-    features: [
-      "24/7 Dispatch Center",
-      "Rapid Response Teams",
-      "Emergency Planning",
-      "Crisis Management",
-      "First Aid Support",
-      "Evacuation Assistance",
-      "Coordination with Authorities",
-      "Post-Incident Analysis"
-    ],
-    benefits: [
-      "Immediate professional help",
-      "Minimize damage and loss",
-      "Ensure personal safety",
-      "Legal compliance",
-      "Peace of mind"
-    ],
-    process: [
-      "Emergency Call Received",
-      "Immediate Dispatch",
-      "On-site Assessment",
-      "Rapid Intervention",
-      "Situation Resolution"
-    ],
-    image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-  },
-  'access-control': {
-    title: "Access Control",
-    description: "Advanced access control systems to manage and monitor entry to your premises with smart technology.",
-    longDescription: "Control who enters your premises and when with our sophisticated access control solutions. From biometrics to smart cards, we have the right technology for your security needs with seamless integration.",
-    icon: "🎫",
-    features: [
-      "Biometric Access",
-      "Smart Card Systems",
-      "Mobile Access",
-      "Visitor Management",
-      "Time-based Access",
-      "Remote Control",
-      "Integration Capabilities",
-      "Audit Trails"
-    ],
-    benefits: [
-      "Enhanced security control",
-      "Improved convenience",
-      "Reduced unauthorized access",
-      "Detailed access logs",
-      "Scalable solutions"
-    ],
-    process: [
-      "Access Requirements Analysis",
-      "System Design",
-      "Installation & Configuration",
-      "User Training",
-      "Ongoing Management"
-    ],
-    image: "https://images.unsplash.com/photo-1560421682-2db0c1312831?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-  }
-};
-
 export default function ServiceDetailPage({ params }) {
   const [slug, setSlug] = useState(null);
+  const [service, setService] = useState(null);
+  const [allServices, setAllServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const getParams = async () => {
@@ -285,40 +107,208 @@ export default function ServiceDetailPage({ params }) {
         const resolvedParams = await params;
         setSlug(resolvedParams.slug);
       } catch (error) {
-        console.error('Error resolving params:', error);
-      } finally {
-        setIsLoading(false);
+        console.error("Error resolving params:", error);
       }
     };
 
     getParams();
   }, [params]);
 
+  useEffect(() => {
+    if (slug) {
+      fetchServiceData();
+    }
+  }, [slug]);
+
+  const fetchServiceData = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Fetch all services first
+      const servicesResponse = await apiService.getAdminServices();
+
+      if (servicesResponse.success) {
+        setAllServices(servicesResponse.data);
+
+        // Find the service that matches the slug
+        const foundService = servicesResponse.data.find(
+          (s) => s.title.toLowerCase().replace(/\s+/g, "-") === slug
+        );
+
+        if (foundService) {
+          setService(foundService);
+        } else {
+          setError("Service not found");
+        }
+      } else {
+        setError("Failed to load services");
+      }
+    } catch (error) {
+      console.error("💥 Error fetching service data:", error);
+      setError("Failed to load service: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  
+
+  // Default features if not provided
+  const getServiceFeatures = (service) => {
+    if (service.features && service.features.length > 0) {
+      return service.features;
+    }
+
+    // Default features based on service type
+    const defaultFeatures = {
+      "Home Security": [
+        "24/7 Professional Monitoring",
+        "Smart Home Integration",
+        "Mobile App Control",
+        "HD CCTV Cameras",
+        "Motion Detection",
+        "Remote Access",
+        "Emergency Alerts",
+        "Professional Installation",
+      ],
+      "Business Security": [
+        "Access Control Systems",
+        "Video Surveillance",
+        "Intrusion Detection",
+        "Security Personnel",
+        "Fire Safety Systems",
+        "Visitor Management",
+        "Perimeter Security",
+        "24/7 Monitoring",
+      ],
+      Cybersecurity: [
+        "Network Security",
+        "Data Encryption",
+        "Threat Monitoring",
+        "Incident Response",
+        "Security Audits",
+        "Compliance Management",
+        "Employee Training",
+        "Backup Solutions",
+      ],
+      "Security Consulting": [
+        "Risk Assessments",
+        "Security Audits",
+        "Compliance Consulting",
+        "Policy Development",
+        "Incident Response Planning",
+        "Security Training",
+        "Vendor Assessment",
+        "Continuous Improvement",
+      ],
+      "Emergency Response": [
+        "24/7 Dispatch Center",
+        "Rapid Response Teams",
+        "Emergency Planning",
+        "Crisis Management",
+        "First Aid Support",
+        "Evacuation Assistance",
+        "Coordination with Authorities",
+        "Post-Incident Analysis",
+      ],
+      "Access Control": [
+        "Biometric Access",
+        "Smart Card Systems",
+        "Mobile Access",
+        "Visitor Management",
+        "Time-based Access",
+        "Remote Control",
+        "Integration Capabilities",
+        "Audit Trails",
+      ],
+    };
+
+    return (
+      defaultFeatures[service.title] || [
+        "Professional Implementation",
+        "24/7 Support",
+        "Custom Solutions",
+        "Quality Assurance",
+      ]
+    );
+  };
+
+  // Default benefits if not provided
+  const getServiceBenefits = (service) => {
+    if (service.key_benefits && service.key_benefits.length > 0) {
+      return service.key_benefits;
+    }
+
+    return [
+      "Enhanced security and protection",
+      "Professional implementation",
+      "24/7 support and monitoring",
+      "Customized solutions for your needs",
+      "Peace of mind and reliability",
+    ];
+  };
+
+  // Default process if not provided
+  const getServiceProcess = (service) => {
+    if (
+      service.implementation_process &&
+      service.implementation_process.length > 0
+    ) {
+      return service.implementation_process;
+    }
+
+    return [
+      "Free Security Assessment",
+      "Custom Solution Design",
+      "Professional Implementation",
+      "Training & Support",
+      "Ongoing Maintenance",
+    ];
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1f8fce] mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-poppins">Loading service details...</p>
+      <div className="min-h-screen bg-white">
+        <div className="min-h-screen flex items-center justify-center bg-white">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1f8fce] mx-auto"></div>
+            <p className="mt-4 text-gray-600 font-poppins">
+              Loading service details...
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
-  const service = serviceDetails[slug];
-
-  if (!service) {
+  if (error || !service) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 font-montserrat">Service Not Found</h1>
-          <Link href="/services" className="text-[#1f8fce] hover:underline mt-2 inline-block font-poppins">
-            Back to Services
-          </Link>
+      <div className="min-h-screen bg-white">
+        <div className="min-h-screen flex items-center justify-center bg-white">
+          <div className="text-center">
+            <div className="text-6xl mb-4">❌</div>
+            <h1 className="text-2xl font-bold text-gray-900 font-montserrat">
+              Service Not Found
+            </h1>
+            <p className="text-gray-600 mt-2 mb-4">
+              {error || "The requested service could not be found."}
+            </p>
+            <Link
+              href="/services"
+              className="text-[#1f8fce] hover:underline mt-2 inline-block font-poppins"
+            >
+              Back to Services
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
+
+  const serviceFeatures = getServiceFeatures(service);
+  const serviceBenefits = getServiceBenefits(service);
+  const serviceProcess = getServiceProcess(service);
 
   return (
     <div className="min-h-screen bg-white">
@@ -364,18 +354,6 @@ export default function ServiceDetailPage({ params }) {
               <span className="text-white font-semibold">{service.title}</span>
             </motion.div>
 
-            {/* Service Icon */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="flex justify-center mb-4 sm:mb-6"
-            >
-              <div className="text-5xl sm:text-6xl lg:text-7xl">
-                {service.icon}
-              </div>
-            </motion.div>
-
             {/* Main Title */}
             <motion.h1
               initial={{ opacity: 0, y: 40 }}
@@ -419,14 +397,14 @@ export default function ServiceDetailPage({ params }) {
             >
               <Link
                 href="/contact"
-                className="rounded-md px-6 sm:px-8 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-sm sm:text-base whitespace-nowrap"
+                className="rounded-md px-6 sm:px-8 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-[#1f8fce] hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-sm sm:text-base whitespace-nowrap"
               >
                 <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
                 <span className="relative transition duration-300 ease font-semibold">
                   Get Free Consultation
                 </span>
               </Link>
-              
+
               <Link
                 href="/services"
                 className="inline-flex items-center gap-2 rounded-md px-4 sm:px-6 py-2 sm:py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all duration-300 text-sm sm:text-base"
@@ -456,7 +434,7 @@ export default function ServiceDetailPage({ params }) {
                   About Our {service.title} Service
                 </h2>
                 <p className="text-gray-600 font-poppins text-base sm:text-lg leading-relaxed">
-                  {service.longDescription}
+                  {service.description}
                 </p>
               </div>
 
@@ -466,7 +444,7 @@ export default function ServiceDetailPage({ params }) {
                   Key Features
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {service.features.map((feature, index) => (
+                  {serviceFeatures.map((feature, index) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, y: 20 }}
@@ -476,7 +454,9 @@ export default function ServiceDetailPage({ params }) {
                       className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg"
                     >
                       <CheckCircle className="w-5 h-5 text-[#1f8fce] flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700 font-poppins text-sm sm:text-base">{feature}</span>
+                      <span className="text-gray-700 font-poppins text-sm sm:text-base">
+                        {feature}
+                      </span>
                     </motion.div>
                   ))}
                 </div>
@@ -491,17 +471,7 @@ export default function ServiceDetailPage({ params }) {
               transition={{ duration: 0.8 }}
               className="space-y-6"
             >
-              {/* Service Image */}
-              <div className="relative rounded-xl overflow-hidden shadow-xl">
-                <Image
-                  src={service.image}
-                  alt={service.title}
-                  width={600}
-                  height={400}
-                  className="w-full h-auto object-cover rounded-xl"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
-              </div>
+              
 
               {/* Benefits Card */}
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
@@ -509,7 +479,7 @@ export default function ServiceDetailPage({ params }) {
                   Key Benefits
                 </h3>
                 <div className="space-y-3">
-                  {service.benefits.map((benefit, index) => (
+                  {serviceBenefits.map((benefit, index) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, x: 20 }}
@@ -519,7 +489,9 @@ export default function ServiceDetailPage({ params }) {
                       className="flex items-center gap-3"
                     >
                       <Star className="w-5 h-5 text-[#1f8fce] flex-shrink-0" />
-                      <span className="text-gray-700 font-poppins text-sm sm:text-base">{benefit}</span>
+                      <span className="text-gray-700 font-poppins text-sm sm:text-base">
+                        {benefit}
+                      </span>
                     </motion.div>
                   ))}
                 </div>
@@ -543,12 +515,13 @@ export default function ServiceDetailPage({ params }) {
               Our Implementation Process
             </h2>
             <p className="text-gray-600 font-poppins text-lg max-w-2xl mx-auto">
-              A structured approach to ensure your security needs are met effectively
+              A structured approach to ensure your security needs are met
+              effectively
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
-            {service.process.map((step, index) => (
+            {serviceProcess.map((step, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -559,7 +532,9 @@ export default function ServiceDetailPage({ params }) {
               >
                 <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-blue-200 h-full flex flex-col items-center">
                   <div className="w-12 h-12 bg-[#1f8fce] rounded-full flex items-center justify-center mb-4 flex-shrink-0">
-                    <span className="text-white text-lg font-bold font-montserrat">{index + 1}</span>
+                    <span className="text-white text-lg font-bold font-montserrat">
+                      {index + 1}
+                    </span>
                   </div>
                   <h3 className="font-semibold text-gray-900 font-montserrat mb-2 text-sm sm:text-base">
                     {step}
@@ -590,12 +565,11 @@ export default function ServiceDetailPage({ params }) {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-white/90 font-poppins text-lg sm:text-xl mb-8 max-w-2xl mx-auto"
             >
-              Get started with our {service.title.toLowerCase()} service and experience professional security solutions
+              Get started with our {service.title.toLowerCase()} service and
+              experience professional security solutions
             </motion.p>
 
-            <motion.div
-              className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full max-w-2xl mx-auto"
-            >
+            <motion.div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full max-w-2xl mx-auto">
               <Link
                 href="/contact"
                 className="w-full sm:w-auto rounded-md px-8 sm:px-12 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base whitespace-nowrap min-w-[200px]"
@@ -639,19 +613,21 @@ export default function ServiceDetailPage({ params }) {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {Object.entries(serviceDetails)
-              .filter(([key]) => key !== slug)
+            {allServices
+              .filter((s) => s.title !== service.title)
               .slice(0, 3)
-              .map(([key, relatedService], index) => (
+              .map((relatedService, index) => (
                 <motion.div
-                  key={key}
+                  key={relatedService.id}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ delay: index * 0.1, duration: 0.6 }}
                   className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 hover:shadow-xl transition-all duration-300"
                 >
-                  <div className="text-4xl mb-4">{relatedService.icon}</div>
+                  <div className="text-4xl mb-4">
+                    {relatedService.icon || "🛡️"}
+                  </div>
                   <h3 className="text-xl font-bold text-gray-900 font-montserrat mb-3">
                     {relatedService.title}
                   </h3>
@@ -659,7 +635,9 @@ export default function ServiceDetailPage({ params }) {
                     {relatedService.description}
                   </p>
                   <Link
-                    href={`/services/${key}`}
+                    href={`/services/${relatedService.title
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`}
                     className="inline-flex items-center gap-2 text-[#1f8fce] font-semibold hover:text-blue-600 transition-colors duration-300 font-poppins"
                   >
                     Learn More

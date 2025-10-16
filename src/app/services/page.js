@@ -15,6 +15,7 @@ import {
   CheckCircle,
   ChevronRight,
 } from "lucide-react";
+import { apiService } from '@/app/lib/api';
 
 // Animation variants
 const containerVariants = {
@@ -95,54 +96,16 @@ const AnimatedTitle = ({ title, highlight }) => {
   );
 };
 
-// Services Data
-const services = [
-  {
-    title: "Home Security",
-    description: "Complete home security solutions with alarm systems, CCTV cameras, and smart home integration for ultimate protection.",
-    icon: "🏠",
-    slug: "home-security",
-    features: ["24/7 Monitoring", "Smart Home Integration", "Emergency Response", "Mobile App Control"]
-  },
-  {
-    title: "Business Security",
-    description: "Comprehensive security systems for businesses with 24/7 monitoring and advanced threat detection technology.",
-    icon: "🏢",
-    slug: "business-security",
-    features: ["Access Control", "Video Surveillance", "Intrusion Detection", "Security Personnel"]
-  },
-  {
-    title: "Cybersecurity",
-    description: "Protect your digital assets with advanced cybersecurity solutions, monitoring, and threat prevention systems.",
-    icon: "🔒",
-    slug: "cybersecurity",
-    features: ["Network Security", "Data Protection", "Threat Monitoring", "Incident Response"]
-  },
-  {
-    title: "Security Consulting",
-    description: "Expert security assessments and consulting services to identify risks and implement effective solutions.",
-    icon: "📊",
-    slug: "security-consulting",
-    features: ["Risk Assessment", "Security Audits", "Compliance", "Strategy Planning"]
-  },
-  {
-    title: "Emergency Response",
-    description: "Rapid response teams available 24/7 for emergency security situations and immediate threat resolution.",
-    icon: "🚨",
-    slug: "emergency-response",
-    features: ["24/7 Availability", "Rapid Deployment", "Trained Personnel", "Coordination with Authorities"]
-  },
-  {
-    title: "Access Control",
-    description: "Advanced access control systems to manage and monitor entry to your premises with smart technology.",
-    icon: "🎫",
-    slug: "access-control",
-    features: ["Biometric Access", "Smart Cards", "Visitor Management", "Remote Control"]
-  },
-];
-
 // ServiceCard Component with Blue/Indigo Theme
-const ServiceCard = ({ title, description, icon, slug, index }) => {
+const ServiceCard = ({ service, index }) => {
+  // Use the actual icon from the database, fallback to default if not available
+  const serviceIcon = service.icon || '🛡️';
+
+  // Generate slug from title
+  const generateSlug = (title) => {
+    return title.toLowerCase().replace(/\s+/g, '-');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -153,19 +116,19 @@ const ServiceCard = ({ title, description, icon, slug, index }) => {
     >
       <div className="flex flex-col h-full">
         <div className="text-4xl mb-4">
-          {icon}
+          {serviceIcon}
         </div>
 
         <div className="space-y-3 py-2 flex-1">
-          <h3 className="text-lg sm:text-xl font-bold text-gray-900 font-montserrat">{title}</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 font-montserrat">{service.title}</h3>
           <p className="text-gray-600 text-sm sm:text-base font-poppins leading-relaxed">
-            {description}
+            {service.description}
           </p>
         </div>
 
         {/* Features List */}
         <div className="mt-4 space-y-2">
-          {services.find(s => s.slug === slug)?.features.slice(0, 3).map((feature, featureIndex) => (
+          {service.features && service.features.slice(0, 3).map((feature, featureIndex) => (
             <div key={featureIndex} className="flex items-center gap-2 text-gray-500 text-sm">
               <CheckCircle className="w-4 h-4 text-[#1f8fce] flex-shrink-0" />
               <span>{feature}</span>
@@ -175,7 +138,7 @@ const ServiceCard = ({ title, description, icon, slug, index }) => {
 
         <div className="flex gap-3 border-t border-dashed border-blue-200 pt-4 sm:pt-6 mt-4">
           <Link
-            href={`/services/${slug}`}
+            href={`/services/${generateSlug(service.title)}`}
             className="inline-flex items-center gap-1 text-[#1f8fce] font-semibold hover:text-[#167aac] border border-[#1f8fce] hover:border-[#167aac] px-4 sm:px-6 py-2 sm:py-3 rounded-md transition-all duration-300 text-sm sm:text-base font-poppins whitespace-nowrap"
           >
             Learn More
@@ -189,10 +152,96 @@ const ServiceCard = ({ title, description, icon, slug, index }) => {
 
 export default function ServicesPage() {
   const [isVisible, setIsVisible] = useState(false);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    fetchServices();
     setIsVisible(true);
   }, []);
+
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log('🔄 Fetching services from API...');
+      
+      const response = await apiService.getAdminServices();
+      console.log('📡 Services API Response:', response);
+      
+      if (response.success) {
+        console.log('✅ Services data received:', response.data);
+        setServices(response.data);
+      } else {
+        setError(response.error || 'Failed to load services');
+      }
+    } catch (error) {
+      console.error('💥 Error fetching services:', error);
+      setError('Failed to load services: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        {/* Loading Banner */}
+        <section className="relative pt-10 pb-8 sm:pt-20 sm:pb-16 lg:pt-32 lg:pb-24 h-auto min-h-[45vh] sm:min-h-[70vh] lg:min-h-[500px] bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce] overflow-hidden">
+          <div className="relative z-10 h-full flex items-center justify-center text-center">
+            <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full pt-12 pb-0 sm:py-0">
+              <div className="animate-pulse">
+                <div className="h-8 bg-white/20 rounded w-48 mx-auto mb-6"></div>
+                <div className="h-16 bg-white/20 rounded w-96 mx-auto mb-4"></div>
+                <div className="h-6 bg-white/20 rounded w-80 mx-auto mb-8"></div>
+                <div className="h-12 bg-white/20 rounded w-64 mx-auto"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Loading Services Grid */}
+        <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {[1, 2, 3, 4, 5, 6].map((item) => (
+                <div key={item} className="bg-white border border-blue-200 rounded-xl p-6 sm:p-8 shadow-lg animate-pulse">
+                  <div className="h-12 bg-gray-200 rounded w-12 mb-4"></div>
+                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-5/6 mb-4"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 rounded w-full"></div>
+                    <div className="h-4 bg-gray-200 rounded w-4/5"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Services</h1>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={fetchServices}
+            className="bg-[#1f8fce] text-white px-6 py-3 rounded-lg hover:bg-[#167aac] transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -289,21 +338,24 @@ export default function ServicesPage() {
       {/* Services Grid Section with Blue/Indigo Background */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-
           {/* Services Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {services.map((service, index) => (
               <ServiceCard
-                key={service.slug}
-                title={service.title}
-                description={service.description}
-                icon={service.icon}
-                slug={service.slug}
+                key={service.id}
+                service={service}
                 index={index}
               />
             ))}
           </div>
+
+          {services.length === 0 && (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🛡️</div>
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Services Available</h3>
+              <p className="text-gray-500">Check back later for our security services.</p>
+            </div>
+          )}
         </div>
       </section>
 

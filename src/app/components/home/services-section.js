@@ -4,45 +4,7 @@ import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
-
-const services = [
-  {
-    title: "Home Security",
-    description: "Complete home security solutions with alarm systems, CCTV cameras, and smart home integration for ultimate protection.",
-    icon: "🏠",
-    slug: "home-security"
-  },
-  {
-    title: "Business Security",
-    description: "Comprehensive security systems for businesses with 24/7 monitoring and advanced threat detection technology.",
-    icon: "🏢",
-    slug: "business-security"
-  },
-  {
-    title: "Cybersecurity",
-    description: "Protect your digital assets with advanced cybersecurity solutions, monitoring, and threat prevention systems.",
-    icon: "🔒",
-    slug: "cybersecurity"
-  },
-  {
-    title: "Security Consulting",
-    description: "Expert security assessments and consulting services to identify risks and implement effective solutions.",
-    icon: "📊",
-    slug: "security-consulting"
-  },
-  {
-    title: "Emergency Response",
-    description: "Rapid response teams available 24/7 for emergency security situations and immediate threat resolution.",
-    icon: "🚨",
-    slug: "emergency-response"
-  },
-  {
-    title: "Access Control",
-    description: "Advanced access control systems to manage and monitor entry to your premises with smart technology.",
-    icon: "🎫",
-    slug: "access-control"
-  },
-];
+import { apiService } from '@/app/lib/api';
 
 // Animation variants
 const containerVariants = {
@@ -131,12 +93,40 @@ const AnimatedTitle = () => {
 };
 
 export default function ServicesSection() {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const carouselRef = useRef(null);
   const autorotateTiming = 5000;
+
+  // Fetch services from API
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await apiService.getAdminServices();
+      
+      if (response.success) {
+        setServices(response.data);
+      } else {
+        setError(response.error || 'Failed to load services');
+      }
+    } catch (error) {
+      console.error('💥 Error fetching services:', error);
+      setError('Failed to load services');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Update cards per view based on screen size
   useEffect(() => {
@@ -161,14 +151,14 @@ export default function ServicesSection() {
 
   // Auto-slide for right to left infinite carousel
   useEffect(() => {
-    if (isDragging) return; // Pause auto-slide when dragging
+    if (isDragging || services.length === 0) return; // Pause auto-slide when dragging or no services
     
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % services.length);
     }, autorotateTiming);
 
     return () => clearInterval(interval);
-  }, [isDragging]);
+  }, [isDragging, services.length]);
 
   // Drag handlers
   const handleDragStart = (e) => {
@@ -183,7 +173,7 @@ export default function ServicesSection() {
     const diffX = startX - endX;
     
     // Minimum drag distance to trigger slide change
-    if (Math.abs(diffX) > 50) {
+    if (Math.abs(diffX) > 50 && services.length > 0) {
       if (diffX > 0) {
         // Drag left - next slide
         setCurrentIndex((prevIndex) => (prevIndex + 1) % services.length);
@@ -196,8 +186,105 @@ export default function ServicesSection() {
     setIsDragging(false);
   };
 
+  // Generate slug from title
+  const generateSlug = (title) => {
+    return title.toLowerCase().replace(/\s+/g, '-');
+  };
+
   // Duplicate services for seamless infinite loop
-  const duplicatedServices = [...services, ...services, ...services];
+  const duplicatedServices = services.length > 0 ? [...services, ...services, ...services] : [];
+
+  if (loading) {
+    return (
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="animate-pulse">
+              <div className="h-8 bg-white/20 rounded w-64 mx-auto mb-4"></div>
+              <div className="h-4 bg-white/20 rounded w-80 mx-auto"></div>
+            </div>
+          </div>
+
+          {/* Loading Carousel */}
+          <div className="relative overflow-hidden">
+            <div className="flex py-2 sm:py-4">
+              {[1, 2, 3].map((item) => (
+                <div
+                  key={item}
+                  className="flex-shrink-0 px-2 sm:px-3"
+                  style={{ 
+                    width: `${cardWidthPercentage}%`,
+                    minWidth: `${cardWidthPercentage}%`
+                  }}
+                >
+                  <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 sm:p-6 shadow-lg flex flex-col h-full animate-pulse">
+                    <div className="h-12 bg-white/20 rounded w-12 mb-4"></div>
+                    <div className="h-6 bg-white/20 rounded w-3/4 mb-3"></div>
+                    <div className="h-4 bg-white/20 rounded w-full mb-2"></div>
+                    <div className="h-4 bg-white/20 rounded w-5/6 mb-4"></div>
+                    <div className="h-10 bg-white/20 rounded w-32 mt-auto"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-center mt-6 sm:mt-8 space-x-2">
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="w-2 h-2 sm:w-3 sm:h-3 bg-white/20 rounded-full"></div>
+            ))}
+          </div>
+
+          <div className="text-center mt-8 sm:mt-12">
+            <div className="h-12 bg-white/20 rounded w-40 mx-auto animate-pulse"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white font-montserrat mb-4">
+            Our Security Services
+          </h2>
+          <p className="text-gray-200 text-sm sm:text-base max-w-2xl mx-auto mb-6">
+            {error}
+          </p>
+          <button
+            onClick={fetchServices}
+            className="rounded-md px-6 sm:px-8 py-3 sm:py-4 bg-white text-[#1f8fce] hover:bg-gray-100 transition-all duration-300 inline-flex items-center text-sm sm:text-base font-semibold"
+          >
+            Try Again
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  if (services.length === 0) {
+    return (
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white font-montserrat mb-4">
+            Our Security Services
+          </h2>
+          <p className="text-gray-200 text-sm sm:text-base max-w-2xl mx-auto mb-6">
+            No services available at the moment. Please check back later.
+          </p>
+          <Link
+            href="/contact"
+            className="rounded-md px-6 sm:px-8 py-3 sm:py-4 bg-white text-[#1f8fce] hover:bg-gray-100 transition-all duration-300 inline-flex items-center text-sm sm:text-base font-semibold"
+          >
+            Contact Us
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
@@ -241,7 +328,7 @@ export default function ServicesSection() {
           >
             {duplicatedServices.map((service, index) => (
               <div
-                key={index}
+                key={`${service.id}-${index}`}
                 className="flex-shrink-0 px-2 sm:px-3"
                 style={{ 
                   width: `${cardWidthPercentage}%`,
@@ -249,11 +336,9 @@ export default function ServicesSection() {
                 }}
               >
                 <ServiceCard
-                  title={service.title}
-                  description={service.description}
-                  icon={service.icon}
-                  slug={service.slug}
+                  service={service}
                   cardsPerView={cardsPerView}
+                  generateSlug={generateSlug}
                 />
               </div>
             ))}
@@ -300,7 +385,10 @@ export default function ServicesSection() {
 }
 
 // ServiceCard component - Responsive
-const ServiceCard = ({ title, description, icon, slug, cardsPerView }) => {
+const ServiceCard = ({ service, cardsPerView, generateSlug }) => {
+  // Use the actual icon from the database, fallback to default if not available
+  const serviceIcon = service.icon || '🛡️';
+
   return (
     <motion.div
       whileHover={{ 
@@ -315,19 +403,19 @@ const ServiceCard = ({ title, description, icon, slug, cardsPerView }) => {
     >
       <div className="flex flex-col h-full">
         <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">
-          {icon}
+          {serviceIcon}
         </div>
 
         <div className="space-y-2 py-2 sm:py-4 flex-1">
-          <h3 className="text-base sm:text-lg font-semibold text-white font-montserrat">{title}</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-white font-montserrat">{service.title}</h3>
           <p className="text-gray-200 text-xs sm:text-sm font-poppins leading-relaxed">
-            {description}
+            {service.description}
           </p>
         </div>
 
         <div className="flex gap-3 border-t border-dashed border-white/30 pt-4 sm:pt-6 mt-auto">
           <Link
-            href={`/services/${slug}`}
+            href={`/services/${generateSlug(service.title)}`}
             className="inline-flex items-center gap-1 text-white font-medium hover:text-white border border-transparent px-3 sm:px-4 py-1.5 sm:py-2 rounded-md transition-all duration-300 text-xs sm:text-sm font-poppins"
           >
             Learn More

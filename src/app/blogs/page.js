@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ChevronRight, Calendar, User, Clock, ArrowLeft } from "lucide-react";
+import { apiService } from '@/app/lib/api';
 
 // Animation variants
 const containerVariants = {
@@ -85,120 +86,9 @@ const AnimatedTitle = ({ title, highlight }) => {
   );
 };
 
-// Blog Data
-const blogPosts = [
-  {
-    id: 1,
-    title: "Top 10 Home Security Tips for Modern Families",
-    excerpt: "Discover essential security strategies to protect your home and loved ones with the latest technology and smart practices.",
-    description: "Learn about the most effective home security measures that every modern family should implement to ensure complete protection and peace of mind.",
-    content: `
-      <p>Home security is more important than ever in today's world. With advancements in technology, there are numerous ways to protect your home and loved ones. In this comprehensive guide, we'll explore the top 10 home security tips that every modern family should consider.</p>
-      
-      <h3>1. Smart Home Integration</h3>
-      <p>Integrate your security system with smart home devices for seamless control and monitoring.</p>
-      
-      <h3>2. Professional Monitoring</h3>
-      <p>24/7 professional monitoring ensures immediate response to any security breaches.</p>
-      
-      <h3>3. Regular System Updates</h3>
-      <p>Keep your security systems updated with the latest software and firmware.</p>
-    `,
-    category: "Home Security",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    author: "John Security",
-    date: "2024-01-15",
-    readTime: "5 min read",
-    slug: "top-10-home-security-tips",
-    featured: true
-  },
-  {
-    id: 2,
-    title: "Business Security: Complete Asset Protection Guide",
-    excerpt: "Comprehensive strategies to secure your business premises, protect sensitive data, and ensure employee safety.",
-    description: "A complete guide to business security covering physical security, cybersecurity, and employee safety protocols.",
-    content: `
-      <p>Business security requires a multi-layered approach to protect your assets, data, and employees. This guide covers everything you need to know.</p>
-      
-      <h3>Physical Security Measures</h3>
-      <p>Implement access control systems, surveillance cameras, and security personnel.</p>
-      
-      <h3>Cybersecurity Protocols</h3>
-      <p>Protect your digital assets with robust cybersecurity measures and employee training.</p>
-    `,
-    category: "Business Security",
-    image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    author: "Sarah Johnson",
-    date: "2024-01-12",
-    readTime: "7 min read",
-    slug: "business-security-asset-protection",
-    featured: true
-  },
-  {
-    id: 3,
-    title: "Cybersecurity Trends 2024: Stay Ahead of Threats",
-    excerpt: "Explore the latest cybersecurity trends and learn how to protect your digital assets from emerging threats.",
-    description: "Stay updated with the latest cybersecurity trends and learn how to protect your organization from new threats.",
-    content: `
-      <p>Cybersecurity is evolving rapidly. Stay ahead of threats with these emerging trends and best practices for 2024.</p>
-      
-      <h3>AI-Powered Security</h3>
-      <p>Artificial intelligence is revolutionizing threat detection and response.</p>
-      
-      <h3>Zero Trust Architecture</h3>
-      <p>Implement zero trust principles for enhanced security posture.</p>
-    `,
-    category: "Cybersecurity",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    author: "Mike Chen",
-    date: "2024-01-10",
-    readTime: "6 min read",
-    slug: "cybersecurity-trends-2024",
-    featured: true
-  },
-  {
-    id: 4,
-    title: "Emergency Response Planning for Businesses",
-    excerpt: "Learn how to create effective emergency response plans to protect your business during crises.",
-    description: "Essential guide to developing comprehensive emergency response plans for businesses of all sizes.",
-    category: "Emergency Response",
-    image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    author: "Lisa Rodriguez",
-    date: "2024-01-08",
-    readTime: "8 min read",
-    slug: "emergency-response-planning-businesses",
-    featured: false
-  },
-  {
-    id: 5,
-    title: "Access Control Systems: Modern Solutions",
-    excerpt: "Discover the latest access control technologies and how they can enhance your security infrastructure.",
-    description: "Explore modern access control solutions and their benefits for various security applications.",
-    category: "Access Control",
-    image: "https://images.unsplash.com/photo-1560421682-2db0c1312831?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    author: "David Wilson",
-    date: "2024-01-05",
-    readTime: "5 min read",
-    slug: "access-control-systems-modern-solutions",
-    featured: false
-  },
-  {
-    id: 6,
-    title: "Security Consulting: When Do You Need It?",
-    excerpt: "Understand when and why your organization might benefit from professional security consulting services.",
-    description: "Learn about the benefits of security consulting and when to seek professional advice.",
-    category: "Security Consulting",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    author: "Emily Parker",
-    date: "2024-01-03",
-    readTime: "4 min read",
-    slug: "security-consulting-when-needed",
-    featured: false
-  }
-];
-
 // Date formatting function to avoid hydration mismatch
 const formatDate = (dateString) => {
+  if (!dateString) return 'Recent';
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -212,8 +102,8 @@ const BlogCard = ({ post, index }) => {
   const [formattedDate, setFormattedDate] = useState('');
 
   useEffect(() => {
-    setFormattedDate(formatDate(post.date));
-  }, [post.date]);
+    setFormattedDate(formatDate(post.published_at || post.created_at || post.date));
+  }, [post.published_at, post.created_at, post.date]);
 
   return (
     <motion.article
@@ -227,7 +117,7 @@ const BlogCard = ({ post, index }) => {
         {/* Image */}
         <div className="relative rounded-lg overflow-hidden mb-4 aspect-video">
           <Image
-            src={post.image}
+            src={post.featured_image_url || post.image || '/api/placeholder/400/250'}
             alt={post.title}
             width={400}
             height={250}
@@ -236,7 +126,7 @@ const BlogCard = ({ post, index }) => {
           {/* Category Badge */}
           <div className="absolute top-3 left-3 z-10">
             <span className="bg-white/95 text-[#1f8fce] px-3 py-1 rounded-full text-sm font-semibold font-poppins backdrop-blur-sm">
-              {post.category}
+              {post.category || 'Security'}
             </span>
           </div>
         </div>
@@ -257,18 +147,18 @@ const BlogCard = ({ post, index }) => {
         <div className="flex items-center justify-between text-gray-500 text-xs sm:text-sm mt-4 pt-4 border-t border-blue-200">
           <div className="flex items-center gap-2">
             <User className="w-4 h-4" />
-            <span className="font-poppins">{post.author}</span>
+            <span className="font-poppins">{post.author || 'Admin'}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4" />
-            <span className="font-poppins">{formattedDate || 'Loading...'}</span>
+            <span className="font-poppins">{formattedDate}</span>
           </div>
         </div>
 
         {/* Read Time */}
         <div className="flex items-center gap-2 text-gray-500 text-xs mt-2">
           <Clock className="w-3 h-3" />
-          <span className="font-poppins">{post.readTime}</span>
+          <span className="font-poppins">{post.read_time || '5 min read'}</span>
         </div>
 
         {/* Read More */}
@@ -287,11 +177,49 @@ const BlogCard = ({ post, index }) => {
 };
 
 export default function BlogPage() {
-  const [isVisible, setIsVisible] = useState(false);
+  const [blogPosts, setBlogPosts] = useState([]);
 
   useEffect(() => {
-    setIsVisible(true);
+    fetchBlogPosts();
   }, []);
+
+  const fetchBlogPosts = async () => {
+    try {
+      console.log('🔄 Fetching all blog posts...');
+      const result = await apiService.getAllBlogs();
+      
+      console.log('📝 API Response:', result);
+      
+      if (result && result.success) {
+        // Handle different response structures
+        let blogs = [];
+        
+        if (Array.isArray(result.data)) {
+          blogs = result.data;
+        } else if (Array.isArray(result.blogs)) {
+          blogs = result.blogs;
+        } else if (Array.isArray(result)) {
+          blogs = result;
+        }
+        
+        console.log('📚 Processed blogs:', blogs);
+        
+        // Filter only published blogs (if status field exists)
+        const publishedBlogs = blogs.filter(post => !post.status || post.status === 'published');
+        
+        console.log('✅ Published blogs:', publishedBlogs);
+        setBlogPosts(publishedBlogs);
+      } else {
+        console.warn('⚠️ No blog data found in response');
+        // Fallback to empty array
+        setBlogPosts([]);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching blog posts:', error);
+      // Fallback to empty array on error
+      setBlogPosts([]);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -407,17 +335,22 @@ export default function BlogPage() {
           </div>
 
           {/* Blog Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {blogPosts.map((post, index) => (
-              <BlogCard
-                key={post.id}
-                post={post}
-                index={index}
-              />
-            ))}
-          </div>
-
-          
+          {blogPosts.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {blogPosts.map((post, index) => (
+                <BlogCard
+                  key={post.id || post._id || index}
+                  post={post}
+                  index={index}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No blog posts available at the moment.</p>
+              <p className="text-gray-400 mt-2">Check back later for new articles.</p>
+            </div>
+          )}
         </div>
       </section>
 

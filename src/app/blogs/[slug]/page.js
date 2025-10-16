@@ -10,13 +10,10 @@ import {
   User, 
   Clock, 
   ArrowLeft,
-  Eye,
   MessageCircle,
   Tag,
 } from 'lucide-react';
 import { apiService } from '@/app/lib/api';
-
-// ... (keep your existing animation variants and helper functions)
 
 export default function BlogDetailPage({ params }) {
   const [slug, setSlug] = useState(null);
@@ -50,18 +47,33 @@ export default function BlogDetailPage({ params }) {
       setIsLoading(true);
       setError(null);
       
+      console.log('🔄 Fetching blog post for slug:', slug);
+      
       // Fetch the specific blog post
       const result = await apiService.getPublicBlogBySlug(slug);
       
-      if (result.success) {
+      console.log('📝 Blog post API response:', result);
+      
+      if (result && result.success) {
         setPost(result.data);
         
-        // Fetch related posts (you might want to implement this endpoint)
-        const relatedResult = await apiService.getPublicBlogs();
-        if (relatedResult.success) {
-          // Filter out current post and take first 3
-          const filtered = relatedResult.data
-            .filter(p => p.slug !== slug)
+        // Fetch all posts for related posts
+        const relatedResult = await apiService.getAllBlogs();
+        if (relatedResult && relatedResult.success) {
+          // Handle different response structures
+          let allPosts = [];
+          
+          if (Array.isArray(relatedResult.data)) {
+            allPosts = relatedResult.data;
+          } else if (Array.isArray(relatedResult.blogs)) {
+            allPosts = relatedResult.blogs;
+          } else if (Array.isArray(relatedResult)) {
+            allPosts = relatedResult;
+          }
+          
+          // Filter out current post and take first 3 published posts
+          const filtered = allPosts
+            .filter(p => (p.slug !== slug) && (!p.status || p.status === 'published'))
             .slice(0, 3);
           setRelatedPosts(filtered);
         }
@@ -69,14 +81,12 @@ export default function BlogDetailPage({ params }) {
         setError('Blog post not found');
       }
     } catch (error) {
-      console.error('Error fetching blog post:', error);
+      console.error('❌ Error fetching blog post:', error);
       setError('Failed to load blog post');
     } finally {
       setIsLoading(false);
     }
   };
-
-  // ... (keep your existing helper functions like scrollToSection)
 
   if (isLoading) {
     return (
@@ -107,7 +117,12 @@ export default function BlogDetailPage({ params }) {
     <div className="min-h-screen bg-white">
       {/* Creative Inner Banner */}
       <section className="relative pt-10 pb-8 sm:pt-20 sm:pb-16 lg:pt-32 lg:pb-24 h-auto min-h-[45vh] sm:min-h-[70vh] lg:min-h-[500px] bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce] overflow-hidden">
-        {/* ... (keep your existing banner background elements) */}
+        {/* Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-4 left-4 w-12 h-12 sm:top-6 sm:left-6 sm:w-16 sm:h-16 lg:top-10 lg:left-10 lg:w-20 lg:h-20 bg-white/10 rounded-full blur-lg sm:blur-xl"></div>
+          <div className="absolute top-1/3 right-4 w-16 h-16 sm:top-1/2 sm:right-6 sm:w-20 sm:h-20 lg:top-1/2 lg:right-20 lg:w-32 lg:h-32 bg-[#1f8fce]/20 rounded-full blur-lg sm:blur-xl lg:blur-2xl"></div>
+          <div className="absolute bottom-4 left-1/4 w-12 h-12 sm:bottom-6 sm:left-1/3 sm:w-16 sm:h-16 lg:bottom-10 lg:left-1/3 lg:w-24 lg:h-24 bg-white/5 rounded-full blur-md sm:blur-lg"></div>
+        </div>
 
         <div className="relative z-10 h-full flex items-center justify-center text-center">
           <motion.div
@@ -196,11 +211,11 @@ export default function BlogDetailPage({ params }) {
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    <span className="font-medium">{post.author}</span>
+                    <span className="font-medium">{post.author || 'Admin'}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
-                    <span>{new Date(post.published_at).toLocaleDateString('en-US', {
+                    <span>{new Date(post.published_at || post.created_at || post.date).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
@@ -208,7 +223,7 @@ export default function BlogDetailPage({ params }) {
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4" />
-                    <span>{post.read_time}</span>
+                    <span>{post.read_time || '5 min read'}</span>
                   </div>
                 </div>
 
@@ -229,7 +244,7 @@ export default function BlogDetailPage({ params }) {
               </motion.div>
 
               {/* Featured Image */}
-              {post.featured_image_url && (
+              {(post.featured_image_url || post.image) && (
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -238,7 +253,7 @@ export default function BlogDetailPage({ params }) {
                   className="relative rounded-2xl overflow-hidden shadow-2xl mb-8"
                 >
                   <Image
-                    src={post.featured_image_url}
+                    src={post.featured_image_url || post.image}
                     alt={post.title}
                     width={800}
                     height={400}
@@ -258,7 +273,12 @@ export default function BlogDetailPage({ params }) {
               >
                 <div 
                   className="text-gray-700 font-poppins leading-relaxed text-base sm:text-lg"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
+                  dangerouslySetInnerHTML={{ 
+                    __html: post.content || post.description || `
+                      <p>${post.excerpt}</p>
+                      <p>This blog post content is currently being updated. Please check back later for the full article.</p>
+                    `
+                  }}
                 />
               </motion.article>
 
@@ -274,11 +294,11 @@ export default function BlogDetailPage({ params }) {
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-[#1f8fce] to-[#1a1a5e] rounded-full flex items-center justify-center">
                       <span className="text-white font-semibold text-sm">
-                        {post.author.split(' ').map(n => n[0]).join('')}
+                        {(post.author || 'Admin').split(' ').map(n => n[0]).join('')}
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900">{post.author}</h4>
+                      <h4 className="font-bold text-gray-900">{post.author || 'Admin'}</h4>
                       <p className="text-gray-600 text-sm">Security Expert</p>
                     </div>
                   </div>
@@ -310,16 +330,16 @@ export default function BlogDetailPage({ params }) {
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-16 h-16 bg-gradient-to-br from-[#1f8fce] to-[#1a1a5e] rounded-full flex items-center justify-center">
                       <span className="text-white font-bold text-lg">
-                        {post.author.split(' ').map(n => n[0]).join('')}
+                        {(post.author || 'Admin').split(' ').map(n => n[0]).join('')}
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900 text-lg">{post.author}</h4>
+                      <h4 className="font-bold text-gray-900 text-lg">{post.author || 'Admin'}</h4>
                       <p className="text-[#1f8fce] text-sm font-medium">Security Specialist</p>
                     </div>
                   </div>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    {post.author} is a certified security professional with years of experience in security solutions. Passionate about helping families and businesses stay secure.
+                    {post.author || 'Our security expert'} is a certified security professional with years of experience in security solutions. Passionate about helping families and businesses stay secure.
                   </p>
                 </div>
 
@@ -364,7 +384,7 @@ export default function BlogDetailPage({ params }) {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {relatedPosts.map((relatedPost, index) => (
                 <motion.article
-                  key={relatedPost.id}
+                  key={relatedPost.id || relatedPost._id || index}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
@@ -372,9 +392,9 @@ export default function BlogDetailPage({ params }) {
                   className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group border border-blue-200"
                 >
                   <div className="relative h-48 overflow-hidden">
-                    {relatedPost.featured_image_url ? (
+                    {(relatedPost.featured_image_url || relatedPost.image) ? (
                       <Image
-                        src={relatedPost.featured_image_url}
+                        src={relatedPost.featured_image_url || relatedPost.image}
                         alt={relatedPost.title}
                         width={400}
                         height={200}
@@ -394,8 +414,8 @@ export default function BlogDetailPage({ params }) {
                       {relatedPost.excerpt}
                     </p>
                     <div className="flex items-center justify-between text-sm text-gray-500">
-                      <span>{new Date(relatedPost.published_at).toLocaleDateString()}</span>
-                      <span>{relatedPost.read_time}</span>
+                      <span>{new Date(relatedPost.published_at || relatedPost.created_at || relatedPost.date).toLocaleDateString()}</span>
+                      <span>{relatedPost.read_time || '5 min read'}</span>
                     </div>
                     <Link
                       href={`/blogs/${relatedPost.slug}`}

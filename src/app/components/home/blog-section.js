@@ -1,36 +1,11 @@
 // components/blog-section.jsx
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-
-const blogPosts = [
-  {
-    id: 1,
-    title: 'Top 10 Home Security Tips for Modern Families',
-    excerpt: 'Discover essential security strategies to protect your home and loved ones with the latest technology and smart practices.',
-    category: 'Home Security',
-    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    slug: 'top-10-home-security-tips'
-  },
-  {
-    id: 2,
-    title: 'Business Security: Complete Asset Protection Guide',
-    excerpt: 'Comprehensive strategies to secure your business premises, protect sensitive data, and ensure employee safety.',
-    category: 'Business Security',
-    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    slug: 'business-security-asset-protection'
-  },
-  {
-    id: 3,
-    title: 'Cybersecurity Trends 2024: Stay Ahead of Threats',
-    excerpt: 'Explore the latest cybersecurity trends and learn how to protect your digital assets from emerging threats.',
-    category: 'Cybersecurity',
-    image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    slug: 'cybersecurity-trends-2024'
-  }
-];
+import { apiService } from '@/app/lib/api';
 
 const BlogCard = ({ post, index }) => {
   return (
@@ -45,9 +20,9 @@ const BlogCard = ({ post, index }) => {
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-300 z-10" />
       
       {/* Image Container with Link */}
-      <Link href={`/blog/${post.slug}`} className="block relative h-48 sm:h-56 md:h-64 overflow-hidden flex-shrink-0">
+      <Link href={`/blogs/${post.slug}`} className="block relative h-48 sm:h-56 md:h-64 overflow-hidden flex-shrink-0">
         <img
-          src={post.image}
+          src={post.featured_image_url || post.image || '/api/placeholder/400/250'}
           alt={post.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
@@ -55,7 +30,7 @@ const BlogCard = ({ post, index }) => {
         {/* Category Badge */}
         <div className="absolute top-3 sm:top-4 left-3 sm:left-4 z-10">
           <span className="bg-white/95 text-[#1f8fce] px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold font-poppins backdrop-blur-sm">
-            {post.category}
+            {post.category || 'Security'}
           </span>
         </div>
       </Link>
@@ -63,7 +38,7 @@ const BlogCard = ({ post, index }) => {
       {/* Content */}
       <div className="p-4 sm:p-6 flex-1 flex flex-col">
         {/* Title with Link */}
-        <Link href={`/blog/${post.slug}`} className="block mb-2 sm:mb-3 flex-shrink-0">
+        <Link href={`/blogs/${post.slug}`} className="block mb-2 sm:mb-3 flex-shrink-0">
           <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white font-montserrat line-clamp-2 transition-colors duration-300 hover:text-[#1f8fce] leading-tight">
             {post.title}
           </h3>
@@ -76,7 +51,7 @@ const BlogCard = ({ post, index }) => {
 
         {/* Read More Link */}
         <Link
-          href={`/blog/${post.slug}`}
+          href={`/blogs/${post.slug}`}
           className="inline-flex items-center gap-2 text-[#1f8fce] font-semibold transition-colors duration-300 hover:text-blue-600 text-sm sm:text-base mt-auto"
         >
           <span>Read More</span>
@@ -88,6 +63,57 @@ const BlogCard = ({ post, index }) => {
 };
 
 export default function BlogSection() {
+  const [blogPosts, setBlogPosts] = useState([]);
+
+  useEffect(() => {
+    fetchBlogPosts();
+  }, []);
+
+  const fetchBlogPosts = async () => {
+    try {
+      console.log('🔄 Fetching blog posts...');
+      const result = await apiService.getAllBlogs();
+      
+      console.log('📝 API Response:', result);
+      
+      if (result && result.success) {
+        // Handle different response structures
+        let blogs = [];
+        
+        if (Array.isArray(result.data)) {
+          blogs = result.data;
+        } else if (Array.isArray(result.blogs)) {
+          blogs = result.blogs;
+        } else if (Array.isArray(result)) {
+          blogs = result;
+        }
+        
+        console.log('📚 Processed blogs:', blogs);
+        
+        // Get only published blogs and limit to 3 for the section
+        const publishedBlogs = blogs
+          .filter(post => !post.status || post.status === 'published')
+          .slice(0, 3);
+        
+        console.log('✅ Published blogs:', publishedBlogs);
+        setBlogPosts(publishedBlogs);
+      } else {
+        console.warn('⚠️ No blog data found in response');
+        // Fallback to empty array
+        setBlogPosts([]);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching blog posts:', error);
+      // Fallback to empty array on error
+      setBlogPosts([]);
+    }
+  };
+
+  // If no blog posts, don't show the section at all
+  if (!blogPosts || blogPosts.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -129,7 +155,7 @@ export default function BlogSection() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16"
         >
           {blogPosts.map((post, index) => (
-            <BlogCard key={post.id} post={post} index={index} />
+            <BlogCard key={post.id || post._id || index} post={post} index={index} />
           ))}
         </motion.div>
 
@@ -142,7 +168,7 @@ export default function BlogSection() {
           className="text-center"
         >
           <Link
-            href="/blog"
+            href="/blogs"
             className="rounded-md px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-sm sm:text-base"
           >
             <span className="absolute w-48 sm:w-56 md:w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-16 sm:-translate-x-18 md:-translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-48 sm:group-hover:h-56 md:group-hover:h-64 group-hover:-translate-y-24 sm:group-hover:-translate-y-28 md:group-hover:-translate-y-32 ease"></span>

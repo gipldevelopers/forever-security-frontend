@@ -54,11 +54,26 @@ export default function EditService() {
         return;
       }
       
+      // Check if response is OK before parsing JSON
       if (!response.ok) {
-        throw new Error('Failed to fetch service');
+        const errorText = await response.text();
+        console.error('Server response:', errorText);
+        throw new Error(`Failed to fetch service: ${response.status} ${response.statusText}`);
       }
       
-      const service = await response.json();
+      const result = await response.json();
+      
+      // Check if the API call was successful
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to fetch service');
+      }
+      
+      // FIX: Extract service data from the response
+      const service = result.data;
+      
+      if (!service) {
+        throw new Error('Service data not found in response');
+      }
       
       // Helper function to parse JSON or string arrays
       const parseArrayField = (field) => {
@@ -68,7 +83,12 @@ export default function EditService() {
             const parsed = JSON.parse(field);
             return Array.isArray(parsed) && parsed.length > 0 ? parsed : [''];
           } catch (e) {
-            return field.split(',').map(f => f.trim()).filter(f => f) || [''];
+            // If it's a string but not JSON, try comma-separated
+            if (field.includes(',')) {
+              return field.split(',').map(f => f.trim()).filter(f => f);
+            }
+            // If it's a single string, return as array
+            return field.trim() ? [field.trim()] : [''];
           }
         }
         return Array.isArray(field) && field.length > 0 ? field : [''];
@@ -87,7 +107,7 @@ export default function EditService() {
       });
     } catch (error) {
       console.error('Error fetching service:', error);
-      setError('Failed to load service data. Please check if the service exists.');
+      setError(error.message || 'Failed to load service data. Please check if the service exists.');
     } finally {
       setLoading(false);
     }
@@ -138,7 +158,7 @@ export default function EditService() {
 
       const result = await response.json();
 
-      if (response.ok) {
+      if (response.ok && result.success) {
         router.push('/admin/services');
       } else {
         setError(result.error || 'Failed to update service');

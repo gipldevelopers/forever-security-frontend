@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { apiService } from '@/app/lib/api';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -10,59 +11,186 @@ export default function Dashboard() {
     gallery: 0,
     contacts: 0
   });
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [systemStatus, setSystemStatus] = useState({});
   const [loading, setLoading] = useState(true);
   const [apiStatus, setApiStatus] = useState('checking');
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // Test if backend is available first
-        const testResponse = await fetch('http://localhost:5000/api/services', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!testResponse.ok) {
-          throw new Error('Backend not available');
-        }
-
-        setApiStatus('online');
-
-        const responses = await Promise.all([
-          fetch('http://localhost:5000/api/services').then(res => res.json()),
-          fetch('http://localhost:5000/api/blogs').then(res => res.json()),
-          fetch('http://localhost:5000/api/testimonials').then(res => res.json()),
-          fetch('http://localhost:5000/api/gallery').then(res => res.json()),
-          fetch('http://localhost:5000/api/contact').then(res => res.json()),
-        ]);
-
-        setStats({
-          services: responses[0]?.length || 0,
-          blogs: responses[1]?.length || 0,
-          testimonials: responses[2]?.length || 0,
-          gallery: responses[3]?.length || 0,
-          contacts: responses[4]?.length || 0,
-        });
-      } catch (error) {
-        console.error('Error fetching stats:', error);
-        setApiStatus('offline');
-        // Set demo data when backend is not available
-        setStats({
-          services: 5,
-          blogs: 3,
-          testimonials: 8,
-          gallery: 12,
-          contacts: 15,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
+    fetchDashboardData();
   }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      // Test API connection first
+      try {
+        const testResult = await apiService.getAllBlogs();
+        if (testResult && (testResult.success || Array.isArray(testResult.data))) {
+          setApiStatus('online');
+        } else {
+          setApiStatus('offline');
+        }
+      } catch (error) {
+        console.log('API test failed, using demo mode');
+        setApiStatus('offline');
+        setDemoData();
+        setLoading(false);
+        return;
+      }
+
+      // Try to fetch dashboard data from new endpoint first
+      try {
+        const statsResponse = await apiService.getDashboardStats();
+        if (statsResponse && statsResponse.success) {
+          console.log('✅ Using dashboard stats from /api/dashboard/stats');
+          setStats(statsResponse.data);
+        } else {
+          console.log('❌ Dashboard stats failed, trying fallback');
+          await fetchFallbackData();
+        }
+      } catch (error) {
+        console.log('❌ Dashboard stats endpoint failed, trying fallback');
+        await fetchFallbackData();
+      }
+
+      // Try to fetch recent activities
+      try {
+        const activitiesResponse = await apiService.getRecentActivities();
+        if (activitiesResponse && activitiesResponse.success) {
+          setRecentActivities(activitiesResponse.data);
+        }
+      } catch (error) {
+        console.log('Recent activities failed, using empty array');
+        setRecentActivities([]);
+      }
+
+      // Try to fetch system status
+      try {
+        const statusResponse = await apiService.getSystemStatus();
+        if (statusResponse && statusResponse.success) {
+          setSystemStatus(statusResponse.data);
+        }
+      } catch (error) {
+        console.log('System status failed, using default');
+        setSystemStatus({ database: 'unknown', tables: 0 });
+      }
+
+    } catch (error) {
+      console.error('Error in dashboard:', error);
+      setApiStatus('offline');
+      setDemoData();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFallbackData = async () => {
+    try {
+      // Try the admin dashboard endpoint as fallback
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/dashboard`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          console.log('✅ Using fallback dashboard data from /api/admin/dashboard');
+          setStats(data.data);
+          return;
+        }
+      }
+    } catch (error) {
+      console.log('Fallback dashboard also failed');
+    }
+
+    // If all else fails, use demo data
+    setDemoData();
+  };
+
+  const setDemoData = () => {
+    setStats({
+      services: 5,
+      blogs: 3,
+      testimonials: 8,
+      gallery: 12,
+      contacts: 15,
+    });
+    setRecentActivities([
+      {
+        id: 1,
+        type: 'contact',
+        title: 'New message from John Doe',
+        description: 'Security consultation needed for our office building...',
+        time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        status: 'new'
+      },
+      {
+        id: 2,
+        type: 'blog',
+        title: 'New blog: Security Tips 2024',
+        description: 'Blog post published',
+        time: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+        status: 'published'
+      },
+      {
+        id: 3,
+        type: 'testimonial',
+        title: 'Testimonial from Jane Smith',
+        description: 'Testimonial approved',
+        time: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'approved'
+      }
+    ]);
+    setSystemStatus({ database: 'connected', tables: 15, api: 'online' });
+  };
+
+  const formatTime = (timestamp) => {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffInHours = (now - time) / (1000 * 60 * 60);
+
+    if (diffInHours < 1) {
+      return 'Just now';
+    } else if (diffInHours < 24) {
+      return `${Math.floor(diffInHours)} hours ago`;
+    } else {
+      return `${Math.floor(diffInHours / 24)} days ago`;
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'new':
+      case 'published':
+      case 'approved':
+        return 'bg-blue-500';
+      case 'pending':
+      case 'draft':
+        return 'bg-amber-500';
+      case 'read':
+        return 'bg-gray-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'new':
+        return 'New';
+      case 'published':
+        return 'Published';
+      case 'approved':
+        return 'Approved';
+      case 'pending':
+        return 'Pending';
+      case 'draft':
+        return 'Draft';
+      case 'read':
+        return 'Read';
+      default:
+        return status;
+    }
+  };
 
   const statCards = [
     { 
@@ -97,23 +225,38 @@ export default function Dashboard() {
     },
   ];
 
-  const recentContacts = [
-    { name: 'John Doe', message: 'Security consultation needed', time: '2 hours ago', unread: true },
-    { name: 'Jane Smith', message: 'Service inquiry', time: '5 hours ago', unread: true },
-    { name: 'Mike Johnson', message: 'Emergency security assessment', time: '1 day ago', unread: false },
-  ];
-
   const quickActions = [
-    { title: 'Add Service', description: 'Create new security service', link: '/admin/services', color: 'bg-blue-500 hover:bg-blue-600' },
-    { title: 'Write Blog', description: 'Create new blog post', link: '/admin/blogs', color: 'bg-green-500 hover:bg-green-600' },
-    { title: 'Add Testimonial', description: 'Add customer testimonial', link: '/admin/testimonials', color: 'bg-amber-500 hover:bg-amber-600' },
-    { title: 'Upload Image', description: 'Add to gallery', link: '/admin/gallery', color: 'bg-purple-500 hover:bg-purple-600' },
+    { 
+      title: 'Add Service', 
+      description: 'Create new security service', 
+      link: '/admin/services/create', 
+      color: 'bg-blue-500 hover:bg-blue-600'
+    },
+    { 
+      title: 'Write Blog', 
+      description: 'Create new blog post', 
+      link: '/admin/blogs/create', 
+      color: 'bg-green-500 hover:bg-green-600'
+    },
+    { 
+      title: 'Add Testimonial', 
+      description: 'Add customer testimonial', 
+      link: '/admin/testimonials/create', 
+      color: 'bg-amber-500 hover:bg-amber-600'
+    },
+    { 
+      title: 'Upload Image', 
+      description: 'Add to gallery', 
+      link: '/admin/gallery/create', 
+      color: 'bg-purple-500 hover:bg-purple-600'
+    },
   ];
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <span className="ml-3 text-gray-600">Loading dashboard...</span>
       </div>
     );
   }
@@ -126,6 +269,9 @@ export default function Dashboard() {
           <div>
             <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
             <p className="text-blue-100 text-lg">Welcome to Forever Security Admin Panel</p>
+            <p className="text-blue-200 text-sm mt-1">
+              {apiStatus === 'online' ? 'Connected to live data' : 'Running in demo mode'}
+            </p>
           </div>
           {apiStatus === 'offline' && (
             <div className="bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -143,8 +289,14 @@ export default function Dashboard() {
             <div>
               <p className="text-amber-800 font-medium">Backend Server Offline</p>
               <p className="text-amber-700 text-sm">
-                Using demo data. Make sure your backend is running on http://localhost:5000
+                Using demo data. Make sure your backend is running on {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}
               </p>
+              <button
+                onClick={fetchDashboardData}
+                className="mt-2 text-amber-700 hover:text-amber-800 font-medium text-sm"
+              >
+                Retry Connection
+              </button>
             </div>
           </div>
         </div>
@@ -174,46 +326,52 @@ export default function Dashboard() {
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {/* Recent Contacts */}
+        {/* Recent Activities */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-800">Recent Contact Messages</h2>
-              <Link 
-                href="/admin/contact"
+              <h2 className="text-xl font-semibold text-gray-800">Recent Activities</h2>
+              <button 
+                onClick={fetchDashboardData}
                 className="text-blue-500 hover:text-blue-600 font-medium text-sm"
               >
-                View All
-              </Link>
+                Refresh
+              </button>
             </div>
           </div>
           
           <div className="p-6 space-y-4">
-            {recentContacts.map((contact, index) => (
-              <div 
-                key={index} 
-                className={`p-4 rounded-lg border transition-all duration-200 ${
-                  contact.unread 
-                    ? 'bg-blue-50 border-blue-200' 
-                    : 'bg-gray-50 border-gray-200'
-                } hover:shadow-sm`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <h3 className="font-semibold text-gray-800">{contact.name}</h3>
-                      {contact.unread && (
-                        <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                          New
+            {recentActivities.length > 0 ? (
+              recentActivities.map((activity) => (
+                <div 
+                  key={activity.id} 
+                  className="p-4 rounded-lg border border-gray-200 hover:shadow-sm transition-all duration-200"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3 className="font-semibold text-gray-800">
+                          {activity.title}
+                        </h3>
+                        <span className={`${getStatusColor(activity.status)} text-white text-xs px-2 py-1 rounded-full`}>
+                          {getStatusText(activity.status)}
                         </span>
-                      )}
+                      </div>
+                      <p className="text-gray-600 text-sm mb-2">
+                        {activity.description}
+                      </p>
+                      <span className="text-xs text-gray-500">
+                        {formatTime(activity.time)}
+                      </span>
                     </div>
-                    <p className="text-gray-600 text-sm mb-2">{contact.message}</p>
-                    <span className="text-xs text-gray-500">{contact.time}</span>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <p>No recent activities</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
@@ -260,8 +418,20 @@ export default function Dashboard() {
             </div>
             <div className="text-gray-600 text-sm">API Server</div>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-            <div className="text-green-600 font-bold text-lg">Connected</div>
+          <div className={`text-center p-4 rounded-lg border ${
+            systemStatus.database === 'connected'
+              ? 'bg-green-50 border-green-200'
+              : systemStatus.database === 'disconnected'
+              ? 'bg-red-50 border-red-200'
+              : 'bg-amber-50 border-amber-200'
+          }`}>
+            <div className={`font-bold text-lg ${
+              systemStatus.database === 'connected' ? 'text-green-600' : 
+              systemStatus.database === 'disconnected' ? 'text-red-600' : 'text-amber-600'
+            }`}>
+              {systemStatus.database === 'connected' ? 'Connected' : 
+               systemStatus.database === 'disconnected' ? 'Disconnected' : 'Unknown'}
+            </div>
             <div className="text-gray-600 text-sm">Database</div>
           </div>
           <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
@@ -269,10 +439,17 @@ export default function Dashboard() {
             <div className="text-gray-600 text-sm">Admin Panel</div>
           </div>
           <div className="text-center p-4 bg-amber-50 rounded-lg border border-amber-200">
-            <div className="text-amber-600 font-bold text-lg">Ready</div>
-            <div className="text-gray-600 text-sm">Services</div>
+            <div className="text-amber-600 font-bold text-lg">
+              {systemStatus.tables || 'N/A'} Tables
+            </div>
+            <div className="text-gray-600 text-sm">Database</div>
           </div>
         </div>
+        {systemStatus.timestamp && (
+          <div className="mt-4 text-center text-sm text-gray-500">
+            Last updated: {new Date(systemStatus.timestamp).toLocaleString()}
+          </div>
+        )}
       </div>
     </div>
   );

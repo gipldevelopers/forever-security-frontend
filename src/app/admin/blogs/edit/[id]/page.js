@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { 
   ArrowLeft,
   Save,
@@ -41,6 +40,21 @@ export default function EditBlogPage() {
 
   useEffect(() => {
     console.log('🔄 Edit page mounted, params:', params);
+    
+    // Check authentication using your existing method
+    const token = localStorage.getItem('adminToken');
+    console.log('🔐 Admin token available:', !!token);
+    
+    if (!token) {
+      console.log('❌ No admin token found');
+      // Your admin layout will handle the redirect
+      setIsLoading(false);
+      return;
+    }
+    
+    // Make sure API service has the token
+    apiService.setToken(token);
+    
     if (params.id) {
       fetchBlog();
     }
@@ -52,10 +66,8 @@ export default function EditBlogPage() {
       setError('');
       console.log('📝 Fetching blog with ID:', params.id);
       
-      // Check if we have a token
-      const token = apiService.getToken();
-      console.log('🔐 Auth token available:', !!token);
-      
+      // Double-check authentication
+      const token = localStorage.getItem('adminToken');
       if (!token) {
         setError('Authentication required. Please login again.');
         setIsLoading(false);
@@ -96,12 +108,10 @@ export default function EditBlogPage() {
       }
     } catch (error) {
       console.error('💥 Error fetching blog:', error);
-      if (error.message.includes('Authentication failed')) {
+      if (error.message.includes('Authentication failed') || error.message.includes('401')) {
         setError('Authentication failed. Please login again.');
-        // Redirect to login after a delay
-        setTimeout(() => {
-          router.push('/admin/login');
-        }, 2000);
+        // Clear token - your admin layout will handle redirect
+        localStorage.removeItem('adminToken');
       } else {
         setError('Failed to load blog: ' + error.message);
       }
@@ -172,7 +182,7 @@ export default function EditBlogPage() {
 
     try {
       // Check authentication before proceeding
-      const token = apiService.getToken();
+      const token = localStorage.getItem('adminToken');
       if (!token) {
         setError('Authentication required. Please login again.');
         setIsSaving(false);
@@ -194,28 +204,61 @@ export default function EditBlogPage() {
         is_published: formData.is_published
       };
 
-      // Only include featured_image_url if we're not uploading a new image
-      if (!featuredImage && formData.featured_image_url) {
-        updateData.featured_image_url = formData.featured_image_url;
-      }
+      // If we have a new image, use FormData
+      if (featuredImage) {
+        console.log('📤 Uploading with FormData (with image)');
+        const formDataToSend = new FormData();
+        
+        // Append all fields
+        Object.keys(updateData).forEach(key => {
+          if (key === 'tags') {
+            formDataToSend.append(key, JSON.stringify(updateData[key]));
+          } else {
+            formDataToSend.append(key, updateData[key]);
+          }
+        });
+        
+        // Append the image file
+        formDataToSend.append('featured_image', featuredImage);
+        
+        const response = await apiService.updateBlog(params.id, formDataToSend);
+        
+        console.log('📡 Update response:', response);
 
-      console.log('📤 Sending update data:', updateData);
-
-      // Use the API service for consistency
-      const response = await apiService.updateBlog(params.id, updateData);
-      
-      console.log('📡 Update response:', response);
-
-      if (response.success) {
-        console.log('✅ Blog updated successfully');
-        router.push('/admin/blogs');
+        if (response.success) {
+          console.log('✅ Blog updated successfully with image');
+          router.push('/admin/blogs');
+        } else {
+          setError(response.error || 'Failed to update blog');
+        }
       } else {
-        setError(response.error || 'Failed to update blog');
+        // If no new image, use JSON
+        console.log('📤 Uploading with JSON (no image)');
+        
+        // Only include featured_image_url if we're keeping the existing one
+        if (formData.featured_image_url) {
+          updateData.featured_image_url = formData.featured_image_url;
+        }
+
+        console.log('📤 Sending update data:', updateData);
+
+        // Use the JSON update method
+        const response = await apiService.updateBlogJson(params.id, updateData);
+        
+        console.log('📡 Update response:', response);
+
+        if (response.success) {
+          console.log('✅ Blog updated successfully');
+          router.push('/admin/blogs');
+        } else {
+          setError(response.error || 'Failed to update blog');
+        }
       }
     } catch (error) {
       console.error('💥 Error updating blog:', error);
-      if (error.message.includes('Authentication failed')) {
+      if (error.message.includes('Authentication failed') || error.message.includes('401')) {
         setError('Authentication failed. Please login again.');
+        localStorage.removeItem('adminToken');
       } else {
         setError('Failed to update blog: ' + error.message);
       }
