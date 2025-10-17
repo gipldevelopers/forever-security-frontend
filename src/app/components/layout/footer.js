@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import { Facebook, Twitter, Linkedin, Instagram, MapPin, Phone, Mail, Clock } from 'lucide-react';
+import Image from 'next/image'; // Import Image for the logo
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-gradient-to-br from-blue-50 to-indigo-50 text-gray-800">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:py-12 lg:px-8">
         {/* Main Footer Content - Responsive Grid */}
-        {/* Changed grid-cols-1 to grid-cols-2 to force Quick Links and Services inline on smallest screens */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-12">
           
           {/* Company Info - Column 1 (Spans full width on mobile) */}
@@ -18,7 +20,7 @@ export default function Footer() {
               </h3>
               
               <p className="text-gray-600 font-poppins text-sm leading-relaxed max-w-md">
-                Your trusted partner in comprehensive security solutions. Protecting what matters most with cutting-edge technology and professional expertise.
+                Your trusted, licensed partner in security solutions across Gujarat. Protecting what matters most with trained personnel and a proactive approach.
               </p>
 
               {/* Social Links */}
@@ -55,7 +57,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links - Column 2 (Takes 1 of 2 columns on mobile) */}
+          {/* Quick Links - Column 2 */}
           <div className="col-span-1">
             <h4 className="text-base sm:text-lg font-semibold font-montserrat text-gray-900 mb-4 sm:mb-6">Quick Links</h4>
             <ul className="space-y-2 sm:space-y-3">
@@ -83,7 +85,6 @@ export default function Footer() {
                   Services
                 </Link>
               </li>
-              {/* --- NEW GALLERY LINK --- */}
               <li>
                 <Link 
                   href="/gallery" 
@@ -92,7 +93,6 @@ export default function Footer() {
                   Gallery
                 </Link>
               </li>
-              {/* ------------------------ */}
               <li>
                 <Link 
                   href="/blogs" 
@@ -112,73 +112,74 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Services - Column 3 (Takes 1 of 2 columns on mobile, sits next to Quick Links) */}
+          {/* Services - Column 3 */}
           <div className="col-span-1">
             <h4 className="text-base sm:text-lg font-semibold font-montserrat text-gray-900 mb-4 sm:mb-6">Our Services</h4>
             <ul className="space-y-2 sm:space-y-3">
               <li>
                 <Link 
-                  href="/services/home-security" 
+                  href="/services/commercial-security" 
                   className="text-gray-600 font-poppins hover:text-[#1f8fce] transition-all duration-300 hover:translate-x-1 inline-block text-sm sm:text-base"
                 >
-                  Home Security
+                  Commercial Security
                 </Link>
               </li>
               <li>
                 <Link 
-                  href="/services/business-security" 
+                  href="/services/residential-security" 
                   className="text-gray-600 font-poppins hover:text-[#1f8fce] transition-all duration-300 hover:translate-x-1 inline-block text-sm sm:text-base"
                 >
-                  Business Security
+                  Residential Security
                 </Link>
               </li>
               <li>
                 <Link 
-                  href="/services/cybersecurity" 
+                  href="/services/event-security" 
                   className="text-gray-600 font-poppins hover:text-[#1f8fce] transition-all duration-300 hover:translate-x-1 inline-block text-sm sm:text-base"
                 >
-                  Cybersecurity
+                  Event & Private Security
                 </Link>
               </li>
               <li>
                 <Link 
-                  href="/services/security-consulting" 
+                  href="/services/tech-driven" 
                   className="text-gray-600 font-poppins hover:text-[#1f8fce] transition-all duration-300 hover:translate-x-1 inline-block text-sm sm:text-base"
                 >
-                  Security Consulting
+                  Tech-Driven Security
                 </Link>
               </li>
               <li>
                 <Link 
-                  href="/services/emergency-response" 
+                  href="/services/investigation" 
                   className="text-gray-600 font-poppins hover:text-[#1f8fce] transition-all duration-300 hover:translate-x-1 inline-block text-sm sm:text-base"
                 >
-                  Emergency Response
+                  Private Investigation
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact Info - Column 4 (Spans full width on mobile) */}
+          {/* Contact Info - Column 4 */}
           <div className="col-span-2 lg:col-span-1">
             <h4 className="text-base sm:text-lg font-semibold font-montserrat text-gray-900 mb-4 sm:mb-6">Contact Info</h4>
             <ul className="space-y-3 text-gray-600 font-poppins text-sm sm:text-base">
               <li className="flex items-start space-x-3">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#1f8fce] mt-0.5 flex-shrink-0" />
-                <span className="break-words">123 Security Street, Safe City, SC 12345</span>
+                <span className="break-words">246/B, Purusangit Bunglow, Sector 7a, Gandhinagar, Gujarat-382007</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-[#1f8fce] flex-shrink-0" />
-                <span>(555) 123-4567</span>
+                <span>+91 76008 04331</span>
+              </li>
+              <li className="flex items-center space-x-3">
+                <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-[#1f8fce] flex-shrink-0" />
+                <span>+91 99049 70408</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-[#1f8fce] flex-shrink-0" />
-                <span className="break-all">info@foreversecurity.com</span>
+                <span className="break-all">hr.foreversec@gmail.com</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#1f8fce] flex-shrink-0" />
-                <span>24/7 Support Available</span>
-              </li>
+              {/* Removed 24/7 Support line as requested */}
             </ul>
           </div>
         </div>
@@ -188,12 +189,28 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0 text-center sm:text-left">
             {/* Left Side - Copyright */}
             <div className="text-gray-600 font-poppins text-xs sm:text-sm">
-              &copy; {new Date().getFullYear()} Forever Security. All rights reserved.
+              &copy; {currentYear} Forever Security Services. All rights reserved.
             </div>
 
-            {/* Right Side - Powered By */}
+            {/* Right Side - Powered By with Logo */}
             <div className="flex items-center space-x-2 text-gray-600 font-poppins text-xs sm:text-sm">
+              
               <span>Powered by:</span>
+              {/* GIPL Logo Link */}
+              <a 
+                href="https://gohilinfotech.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                aria-label="Gohil Infotech Logo"
+              >
+                <Image
+                  src="/images/GIPL_Logo mark.png"
+                  alt="Gohil Infotech Logo"
+                  width={50} // Set small size
+                  height={50} // Set small size
+                  className="w-8 h-8 object-contain"
+                />
+              </a>
               <a 
                 href="https://gohilinfotech.com" 
                 target="_blank" 

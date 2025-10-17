@@ -13,7 +13,6 @@ export default function AdminLayout({ children }) {
     { name: 'Gallery', href: '/admin/gallery', icon: '🖼️' },
     { name: 'Testimonials', href: '/admin/testimonials', icon: '⭐' },
     { name: 'Contact Us', href: '/admin/contact', icon: '📞' },
-    { name: 'Setting', href: '/admin/settings', icon: '⚙️' },
   ];
 
   const handleLogout = () => {

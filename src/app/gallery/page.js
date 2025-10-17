@@ -521,7 +521,7 @@ export default function GalleryPage() {
               transition={{ delay: 0.5, duration: 0.6 }}
               className="text-sm sm:text-lg md:text-xl lg:text-2xl text-white/90 font-poppins max-w-2xl mx-auto leading-relaxed mb-2 sm:mb-6 px-2 sm:px-0"
             >
-              Explore our security installations, projects, and solutions through our comprehensive photo collection
+              See our commitment to professional security in action, showcasing successful projects and our dedicated personnel across Gujarat.
             </motion.p>
           </motion.div>
         </div>

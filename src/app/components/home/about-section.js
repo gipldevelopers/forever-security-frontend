@@ -59,10 +59,10 @@ export default function AboutSection() {
     ));
   };
 
-  // Render animated title with highlight
+  // Render animated title with highlight - REAL CONTENT
   const AnimatedTitle = () => {
-    const title = "Exclusive Technology to Provide IT Solutions";
-    const highlight = "IT Solutions";
+    const title = "Setting the Benchmark for Security Excellence";
+    const highlight = "Security Excellence";
     
     const parts = title.split(highlight);
     
@@ -128,7 +128,7 @@ export default function AboutSection() {
               <AnimatedTitle />
             </h3>
 
-            {/* Description - Responsive */}
+            {/* Description - REAL CONTENT */}
             <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8">
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
@@ -137,8 +137,7 @@ export default function AboutSection() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="text-sm sm:text-base lg:text-lg text-[#838383] leading-relaxed"
               >
-                Advising clients on technology training, digital transformation, 
-                and IT infrastructure planning to help them achieve their business goals.
+                We are a licensed and reliable security agency in Gujarat, committed to proactive risk management and client empowerment. Our vision is to set regional and global benchmarks in professional security practices.
               </motion.p>
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
@@ -147,8 +146,7 @@ export default function AboutSection() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="text-sm sm:text-base lg:text-lg text-[#838383] leading-relaxed"
               >
-                We leverage coupled product networks to identify and automate problems, 
-                approaching the process systematically for better experience and optimal results.
+                We deploy highly trained, professional guards alongside tech-driven security solutions like smart surveillance and real-time monitoring to secure your assets, property, and peace of mind 24/7.
               </motion.p>
             </div>
 

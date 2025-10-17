@@ -8,7 +8,7 @@ import { ChevronDown, Clock, CreditCard, Truck, Globe, Package, Shield, Home, Bu
 
 const FAQItem = ({ item, isOpen, onClick }) => {
   const IconComponent = getIconComponent(item.icon);
-  
+
   return (
     <motion.div
       layout
@@ -40,7 +40,7 @@ const FAQItem = ({ item, isOpen, onClick }) => {
           </motion.div>
         </div>
       </button>
-      
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -86,6 +86,91 @@ const getIconComponent = (iconName) => {
   return iconMap[iconName] || Shield;
 };
 
+// Split text animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.03
+    }
+  }
+};
+
+const letterVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut"
+    }
+  }
+};
+
+const highlightVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: "backOut"
+    }
+  }
+};
+
+// Split text into letters for animation
+const splitText = (text) => {
+  return text.split('').map((char, index) => (
+    <motion.span
+      key={index}
+      variants={letterVariants}
+      className="inline-block"
+    >
+      {char === ' ' ? '\u00A0' : char}
+    </motion.span>
+  ));
+};
+
+// Animated Title Component for the FAQ section
+const AnimatedFAQTitle = ({ title, highlight }) => {
+  const parts = title.split(highlight);
+
+  return (
+    <motion.span
+      initial="hidden"
+      whileInView="visible"
+      variants={containerVariants}
+      viewport={{ once: true, margin: "-30px" }}
+      className="inline-block"
+    >
+      {/* First part */}
+      {splitText(parts[0])}
+
+      {/* Highlighted part (if it exists) */}
+      {highlight && (
+        <motion.span
+          variants={highlightVariants}
+          className="text-[#1f8fce] inline-block" // Apply the highlight color
+        >
+          {splitText(highlight)}
+        </motion.span>
+      )}
+
+      {/* Second part if exists */}
+      {parts[1] && splitText(parts[1])}
+    </motion.span>
+  );
+};
+
 export default function FAQSection() {
   const [openItem, setOpenItem] = useState('item-1');
 
@@ -93,50 +178,50 @@ export default function FAQSection() {
     {
       id: 'item-1',
       icon: 'shield',
-      question: 'What security measures do you have in place?',
-      answer: 'We implement multi-layered security including 24/7 monitoring, encrypted data transmission, biometric access controls, and regular security audits. All our systems are compliant with industry standards and regularly updated to protect against emerging threats.',
+      question: 'Are your security guards licensed and trained?',
+      answer: 'Yes, all our guards are fully licensed by the relevant authorities in Gujarat and undergo rigorous training protocols. This includes emergency response, conflict resolution, first aid, and the use of modern surveillance technology to ensure professional service.',
     },
     {
       id: 'item-2',
       icon: 'home',
-      question: 'Do you offer home security solutions?',
-      answer: 'Yes, we provide comprehensive home security packages including alarm systems, CCTV cameras, smart locks, and environmental monitoring. Our home solutions are customizable and can be integrated with smart home devices for complete protection.',
+      question: 'Do you offer residential security solutions?',
+      answer: 'Absolutely. We provide comprehensive residential security tailored to protect your family and property, including 24/7 manned guards, regular patrols, alarm systems, and CCTV monitoring. Solutions are personalized for apartments and large properties.',
     },
     {
       id: 'item-3',
       icon: 'building',
       question: 'What business security services do you offer?',
-      answer: 'We offer enterprise-grade security solutions including access control systems, surveillance networks, cybersecurity protection, security personnel, and emergency response planning. Our business packages are scalable to fit organizations of all sizes.',
+      answer: 'We cover the full spectrum of business security, from Commercial and Industrial Guarding to Corporate Security. Services include access control, fire watch, retail loss prevention, and on-site security teams for corporate campuses and factories.',
     },
     {
       id: 'item-4',
-      icon: 'lock',
-      question: 'How secure is my data with your systems?',
-      answer: 'Your data is protected with end-to-end encryption, secure cloud storage, and strict access controls. We comply with data protection regulations and never share your information with third parties without explicit consent.',
+      icon: 'globe',
+      question: 'Do you provide security services across Gujarat?',
+      answer: 'Yes, we are a licensed agency serving clients throughout Gujarat, including major cities like Gandhinagar, Ahmedabad, Surat, Vadodara, and Rajkot. We deploy personnel regionally based on client needs.',
     },
     {
       id: 'item-5',
       icon: 'users',
-      question: 'Do you provide security personnel?',
-      answer: 'Yes, we offer trained security personnel for events, businesses, and residential properties. All our security officers are licensed, background-checked, and receive ongoing training to ensure professional service.',
+      question: 'Do you provide security personnel for events?',
+      answer: 'Yes, we offer specialized Event & Private Security. Our trained professionals manage access control, crowd management, VIP protection, and ensure a safe environment for all types of events, from corporate functions to private celebrations.',
     },
     {
       id: 'item-6',
-      icon: 'wifi',
-      question: 'What happens if my internet connection fails?',
-      answer: 'Our systems include battery backups and cellular failover capabilities. In case of internet outage, your security system will automatically switch to cellular backup and continue monitoring your property without interruption.',
+      icon: 'clock',
+      question: 'Is your security service available 24/7?',
+      answer: 'Yes, we offer round-the-clock security services to ensure you are protected at all times. This includes continuous manned guarding and 24/7 remote surveillance support for immediate incident response.',
     },
     {
       id: 'item-7',
-      icon: 'clock',
-      question: 'What are your response times for emergencies?',
-      answer: 'Our average emergency response time is under 3 minutes for priority alerts. We maintain 24/7 monitoring centers with trained professionals who can dispatch emergency services and contact you immediately when an alert is triggered.',
+      icon: 'lock',
+      question: 'How do you handle emergency situations?',
+      answer: 'We have established emergency protocols and maintain direct communication channels with local police and medical services. Our on-site guards and central monitoring teams are trained to follow strict incident response procedures to neutralize threats quickly.',
     },
     {
       id: 'item-8',
       icon: 'credit-card',
       question: 'What payment options do you accept?',
-      answer: 'We accept all major credit cards, debit cards, bank transfers, and offer financing options. We also provide flexible billing cycles (monthly, quarterly, or annual) to suit your budget and preferences.',
+      answer: 'We accept bank transfers (NEFT/RTGS), UPI, and all major credit/debit cards. We offer flexible contract terms (monthly, quarterly, or annual) tailored to the long-term needs of businesses and individuals.',
     }
   ];
 
@@ -157,14 +242,17 @@ export default function FAQSection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className="text-4xl font-bold text-gray-900 dark:text-white font-montserrat mb-6">
-                  Frequently Asked Questions
+                <h2 className="text-4xl font-bold text-gray-900 dark:text-white font-montserrat mb-6 leading-tight">
+                  <AnimatedFAQTitle 
+                    title="Frequently Asked Questions" 
+                    highlight="Questions" // This part will be highlighted (blue) and use the special highlight animation.
+                  />
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 text-lg font-poppins mb-8 leading-relaxed">
                   Find answers to common questions about our security services, 
                   installation process, and support. Can&apos;t find what you&apos;re looking for?
                 </p>
-                
+
                 <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
                   <p className="text-gray-600 dark:text-gray-300 font-poppins">
                     Contact our{' '}

@@ -15,9 +15,17 @@ export default function Dashboard() {
   const [systemStatus, setSystemStatus] = useState({});
   const [loading, setLoading] = useState(true);
   const [apiStatus, setApiStatus] = useState('checking');
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   useEffect(() => {
     fetchDashboardData();
+    
+    // Set up interval to refresh activities every 20 seconds
+    const interval = setInterval(() => {
+      fetchRecentActivities();
+    }, 20000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const fetchDashboardData = async () => {
@@ -40,42 +48,12 @@ export default function Dashboard() {
         return;
       }
 
-      // Try to fetch dashboard data from new endpoint first
-      try {
-        const statsResponse = await apiService.getDashboardStats();
-        if (statsResponse && statsResponse.success) {
-          console.log('✅ Using dashboard stats from /api/dashboard/stats');
-          setStats(statsResponse.data);
-        } else {
-          console.log('❌ Dashboard stats failed, trying fallback');
-          await fetchFallbackData();
-        }
-      } catch (error) {
-        console.log('❌ Dashboard stats endpoint failed, trying fallback');
-        await fetchFallbackData();
-      }
-
-      // Try to fetch recent activities
-      try {
-        const activitiesResponse = await apiService.getRecentActivities();
-        if (activitiesResponse && activitiesResponse.success) {
-          setRecentActivities(activitiesResponse.data);
-        }
-      } catch (error) {
-        console.log('Recent activities failed, using empty array');
-        setRecentActivities([]);
-      }
-
-      // Try to fetch system status
-      try {
-        const statusResponse = await apiService.getSystemStatus();
-        if (statusResponse && statusResponse.success) {
-          setSystemStatus(statusResponse.data);
-        }
-      } catch (error) {
-        console.log('System status failed, using default');
-        setSystemStatus({ database: 'unknown', tables: 0 });
-      }
+      // Fetch all data in parallel
+      await Promise.all([
+        fetchStats(),
+        fetchRecentActivities(),
+        fetchSystemStatus()
+      ]);
 
     } catch (error) {
       console.error('Error in dashboard:', error);
@@ -83,12 +61,54 @@ export default function Dashboard() {
       setDemoData();
     } finally {
       setLoading(false);
+      setLastUpdate(new Date());
     }
   };
 
-  const fetchFallbackData = async () => {
+  const fetchStats = async () => {
     try {
-      // Try the admin dashboard endpoint as fallback
+      const statsResponse = await apiService.getDashboardStats();
+      if (statsResponse && statsResponse.success) {
+        console.log('✅ Using dashboard stats from /api/dashboard/stats');
+        setStats(statsResponse.data);
+      } else {
+        await fetchFallbackStats();
+      }
+    } catch (error) {
+      console.log('❌ Dashboard stats failed, trying fallback');
+      await fetchFallbackStats();
+    }
+  };
+
+  const fetchRecentActivities = async () => {
+    try {
+      const activitiesResponse = await apiService.getRecentActivities();
+      if (activitiesResponse && activitiesResponse.success) {
+        console.log(`✅ Loaded ${activitiesResponse.data.length} recent activities`);
+        setRecentActivities(activitiesResponse.data);
+      } else {
+        setRecentActivities(getDemoActivities());
+      }
+    } catch (error) {
+      console.log('Recent activities failed, using demo data');
+      setRecentActivities(getDemoActivities());
+    }
+  };
+
+  const fetchSystemStatus = async () => {
+    try {
+      const statusResponse = await apiService.getSystemStatus();
+      if (statusResponse && statusResponse.success) {
+        setSystemStatus(statusResponse.data);
+      }
+    } catch (error) {
+      console.log('System status failed, using default');
+      setSystemStatus({ database: 'unknown', tables: 0 });
+    }
+  };
+
+  const fetchFallbackStats = async () => {
+    try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/dashboard`);
       if (response.ok) {
         const data = await response.json();
@@ -103,7 +123,13 @@ export default function Dashboard() {
     }
 
     // If all else fails, use demo data
-    setDemoData();
+    setStats({
+      services: 5,
+      blogs: 3,
+      testimonials: 8,
+      gallery: 12,
+      contacts: 15,
+    });
   };
 
   const setDemoData = () => {
@@ -114,58 +140,107 @@ export default function Dashboard() {
       gallery: 12,
       contacts: 15,
     });
-    setRecentActivities([
-      {
-        id: 1,
-        type: 'contact',
-        title: 'New message from John Doe',
-        description: 'Security consultation needed for our office building...',
-        time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        status: 'new'
-      },
-      {
-        id: 2,
-        type: 'blog',
-        title: 'New blog: Security Tips 2024',
-        description: 'Blog post published',
-        time: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-        status: 'published'
-      },
-      {
-        id: 3,
-        type: 'testimonial',
-        title: 'Testimonial from Jane Smith',
-        description: 'Testimonial approved',
-        time: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        status: 'approved'
-      }
-    ]);
+    setRecentActivities(getDemoActivities());
     setSystemStatus({ database: 'connected', tables: 15, api: 'online' });
   };
+
+  const getDemoActivities = () => [
+    {
+      id: 1,
+      type: 'service',
+      title: 'New service created: Home Security System',
+      description: 'Service added to the system',
+      time: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+      status: 'created',
+      action: 'view',
+      link: '/admin/services'
+    },
+    {
+      id: 2,
+      type: 'blog',
+      title: 'New blog created: Security Tips 2024',
+      description: 'Status: published',
+      time: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+      status: 'published',
+      action: 'edit',
+      link: '/admin/blogs'
+    },
+    {
+      id: 3,
+      type: 'testimonial',
+      title: 'New testimonial: Jane Smith',
+      description: 'Status: approved',
+      time: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+      status: 'approved',
+      action: 'review',
+      link: '/admin/testimonials'
+    },
+    {
+      id: 4,
+      type: 'gallery',
+      title: 'New image uploaded',
+      description: 'security-camera-installation.jpg',
+      time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      status: 'uploaded',
+      action: 'view',
+      link: '/admin/gallery'
+    },
+    {
+      id: 5,
+      type: 'contact',
+      title: 'New contact form: John Doe',
+      description: 'Status: new',
+      time: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+      status: 'new',
+      action: 'view',
+      link: '/admin/contact'
+    },
+    {
+      id: 6,
+      type: 'service',
+      title: 'Service updated: CCTV Installation',
+      description: 'Service updated in the system',
+      time: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+      status: 'updated',
+      action: 'view',
+      link: '/admin/services'
+    }
+  ];
 
   const formatTime = (timestamp) => {
     const now = new Date();
     const time = new Date(timestamp);
-    const diffInHours = (now - time) / (1000 * 60 * 60);
+    const diffInMinutes = (now - time) / (1000 * 60);
+    const diffInHours = diffInMinutes / 60;
+    const diffInDays = diffInHours / 24;
 
-    if (diffInHours < 1) {
+    if (diffInMinutes < 1) {
       return 'Just now';
+    } else if (diffInMinutes < 60) {
+      return `${Math.floor(diffInMinutes)} minutes ago`;
     } else if (diffInHours < 24) {
       return `${Math.floor(diffInHours)} hours ago`;
     } else {
-      return `${Math.floor(diffInHours / 24)} days ago`;
+      return `${Math.floor(diffInDays)} days ago`;
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'new':
+      case 'created':
+      case 'uploaded':
+        return 'bg-blue-500';
       case 'published':
       case 'approved':
-        return 'bg-blue-500';
+        return 'bg-green-500';
+      case 'updated':
+        return 'bg-purple-500';
       case 'pending':
       case 'draft':
         return 'bg-amber-500';
+      case 'deleted':
+        return 'bg-red-500';
       case 'read':
         return 'bg-gray-500';
       default:
@@ -177,18 +252,58 @@ export default function Dashboard() {
     switch (status) {
       case 'new':
         return 'New';
+      case 'created':
+        return 'Created';
       case 'published':
         return 'Published';
       case 'approved':
         return 'Approved';
+      case 'updated':
+        return 'Updated';
+      case 'uploaded':
+        return 'Uploaded';
       case 'pending':
         return 'Pending';
       case 'draft':
         return 'Draft';
+      case 'deleted':
+        return 'Deleted';
       case 'read':
         return 'Read';
       default:
         return status;
+    }
+  };
+
+  const getActionText = (action) => {
+    switch (action) {
+      case 'view':
+        return 'View';
+      case 'edit':
+        return 'Edit';
+      case 'review':
+        return 'Review';
+      default:
+        return 'View';
+    }
+  };
+
+  const getTypeIcon = (type) => {
+    switch (type) {
+      case 'service':
+        return '🛡️';
+      case 'blog':
+        return '📝';
+      case 'testimonial':
+        return '⭐';
+      case 'gallery':
+        return '🖼️';
+      case 'contact':
+        return '📧';
+      case 'system':
+        return '⚙️';
+      default:
+        return '📋';
     }
   };
 
@@ -271,6 +386,7 @@ export default function Dashboard() {
             <p className="text-blue-100 text-lg">Welcome to Forever Security Admin Panel</p>
             <p className="text-blue-200 text-sm mt-1">
               {apiStatus === 'online' ? 'Connected to live data' : 'Running in demo mode'}
+              {lastUpdate && ` • Last updated: ${lastUpdate.toLocaleTimeString()}`}
             </p>
           </div>
           {apiStatus === 'offline' && (
@@ -331,45 +447,69 @@ export default function Dashboard() {
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-gray-800">Recent Activities</h2>
-              <button 
-                onClick={fetchDashboardData}
-                className="text-blue-500 hover:text-blue-600 font-medium text-sm"
-              >
-                Refresh
-              </button>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-gray-500">
+                  Auto-refresh in 20s
+                </span>
+                <button 
+                  onClick={fetchRecentActivities}
+                  className="text-blue-500 hover:text-blue-600 font-medium text-sm"
+                >
+                  Refresh
+                </button>
+              </div>
             </div>
           </div>
           
-          <div className="p-6 space-y-4">
+          <div className="p-6 space-y-4 max-h-96 overflow-y-auto">
             {recentActivities.length > 0 ? (
               recentActivities.map((activity) => (
                 <div 
                   key={activity.id} 
-                  className="p-4 rounded-lg border border-gray-200 hover:shadow-sm transition-all duration-200"
+                  className="p-4 rounded-lg border border-gray-200 hover:shadow-sm transition-all duration-200 bg-white"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
+                  <div className="flex items-start space-x-3">
+                    <div className="text-lg mt-1">
+                      {getTypeIcon(activity.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="font-semibold text-gray-800">
+                        <h3 className="font-semibold text-gray-800 text-sm leading-tight">
                           {activity.title}
                         </h3>
-                        <span className={`${getStatusColor(activity.status)} text-white text-xs px-2 py-1 rounded-full`}>
+                        <span className={`${getStatusColor(activity.status)} text-white text-xs px-2 py-1 rounded-full whitespace-nowrap`}>
                           {getStatusText(activity.status)}
                         </span>
                       </div>
                       <p className="text-gray-600 text-sm mb-2">
                         {activity.description}
                       </p>
-                      <span className="text-xs text-gray-500">
-                        {formatTime(activity.time)}
-                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">
+                          {formatTime(activity.time)}
+                        </span>
+                        {activity.link && (
+                          <Link 
+                            href={activity.link}
+                            className="text-xs text-blue-500 hover:text-blue-600 font-medium"
+                          >
+                            {getActionText(activity.action)} →
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               ))
             ) : (
               <div className="text-center py-8 text-gray-500">
-                <p>No recent activities</p>
+                <p>No recent activities found</p>
+                <button 
+                  onClick={fetchRecentActivities}
+                  className="mt-2 text-blue-500 hover:text-blue-600 text-sm"
+                >
+                  Check for new activities
+                </button>
               </div>
             )}
           </div>

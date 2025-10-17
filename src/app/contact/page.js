@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Clock, MessageCircle, Send, Shield, Lock, Eye } from 'lucide-react';
 
-// Animation variants
+// Animation variants (No Change)
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -45,7 +45,7 @@ const highlightVariants = {
   }
 };
 
-// Split text into letters for animation
+// Split text into letters for animation (No Change)
 const splitText = (text) => {
   return text.split('').map((char, index) => (
     <motion.span
@@ -58,7 +58,7 @@ const splitText = (text) => {
   ));
 };
 
-// Animated Title Component
+// Animated Title Component (No Change)
 const AnimatedTitle = () => {
   const title = "Contact Our Security Experts";
   const highlight = "Security";
@@ -85,7 +85,7 @@ const AnimatedTitle = () => {
   );
 };
 
-// Modern Security Contact Illustration
+// Modern Security Contact Illustration - REVISED CONTENT
 const SecurityContactIllustration = () => (
   <motion.div
     initial={{ opacity: 0, scale: 0.9 }}
@@ -98,7 +98,7 @@ const SecurityContactIllustration = () => (
       {/* Main Illustration Container */}
       <div className="relative flex flex-col items-center justify-center h-full py-4 sm:py-6">
         
-        {/* Animated Security Shield - Responsive */}
+        {/* Animated Security Shield - Responsive (No Change) */}
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           whileInView={{ scale: 1, rotate: 0 }}
@@ -186,9 +186,9 @@ const SecurityContactIllustration = () => (
           transition={{ delay: 1.2 }}
           className="w-full max-w-md space-y-3 sm:space-y-4"
         >
-          {/* Phone Card */}
+          {/* Phone Card 1 - Primary Number */}
           <motion.a
-            href="tel:+15551234567"
+            href="tel:+917600804331"
             initial={{ x: -30, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
             whileHover={{ scale: 1.02, y: -2 }}
@@ -201,9 +201,34 @@ const SecurityContactIllustration = () => (
                 <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div className="text-left flex-1 min-w-0">
-                <div className="font-bold text-gray-900 text-xs sm:text-sm">Contact Number</div>
-                <div className="text-green-600 font-semibold text-sm sm:text-base truncate">+1 (555) 123-4567</div>
+                <div className="font-bold text-gray-900 text-xs sm:text-sm">Main Contact</div>
+                <div className="text-green-600 font-semibold text-sm sm:text-base truncate">+91 76008 04331</div>
                 <div className="text-xs text-gray-500 mt-0.5 sm:mt-1">24/7 Available • Immediate Response</div>
+              </div>
+            </div>
+            <div className="text-green-500 group-hover:text-green-600 transition-colors flex-shrink-0 ml-2">
+              <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+            </div>
+          </motion.a>
+
+          {/* Phone Card 2 - Alternative Number */}
+          <motion.a
+            href="tel:+919904970408"
+            initial={{ x: 30, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            whileHover={{ scale: 1.02, y: -2 }}
+            viewport={{ once: true, margin: "-30px" }}
+            transition={{ delay: 1.6 }}
+            className="flex items-center bg-white p-3 sm:p-4 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg border border-green-200 hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 cursor-pointer group"
+          >
+            <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-lg flex items-center justify-center group-hover:bg-green-600 transition-colors shadow-md sm:shadow-lg flex-shrink-0">
+                <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              </div>
+              <div className="text-left flex-1 min-w-0">
+                <div className="font-bold text-gray-900 text-xs sm:text-sm">Alternative Contact</div>
+                <div className="text-green-600 font-semibold text-sm sm:text-base truncate">+91 99049 70408</div>
+                <div className="text-xs text-gray-500 mt-0.5 sm:mt-1">Sales & Inquiry • Support</div>
               </div>
             </div>
             <div className="text-green-500 group-hover:text-green-600 transition-colors flex-shrink-0 ml-2">
@@ -213,12 +238,12 @@ const SecurityContactIllustration = () => (
 
           {/* Email Card */}
           <motion.a
-            href="mailto:info@securitypro.com"
-            initial={{ x: 30, opacity: 0 }}
+            href="mailto:hr.foreversec@gmail.com"
+            initial={{ x: -30, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
             whileHover={{ scale: 1.02, y: -2 }}
             viewport={{ once: true, margin: "-30px" }}
-            transition={{ delay: 1.6 }}
+            transition={{ delay: 1.8 }}
             className="flex items-center bg-white p-3 sm:p-4 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg border border-blue-200 hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 cursor-pointer group"
           >
             <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
@@ -227,8 +252,8 @@ const SecurityContactIllustration = () => (
               </div>
               <div className="text-left flex-1 min-w-0">
                 <div className="font-bold text-gray-900 text-xs sm:text-sm">Email Support</div>
-                <div className="text-blue-600 font-semibold text-xs sm:text-sm truncate">info@securitypro.com</div>
-                <div className="text-xs text-gray-500 mt-0.5 sm:mt-1">Response within 2 hours • Secure Channel</div>
+                <div className="text-blue-600 font-semibold text-xs sm:text-sm truncate">hr.foreversec@gmail.com</div>
+                <div className="text-xs text-gray-500 mt-0.5 sm:mt-1">HR & General Inquiries • Secure Channel</div>
               </div>
             </div>
             <div className="text-blue-500 group-hover:text-blue-600 transition-colors flex-shrink-0 ml-2">
@@ -242,7 +267,7 @@ const SecurityContactIllustration = () => (
             whileInView={{ y: 0, opacity: 1 }}
             whileHover={{ scale: 1.02, y: -2 }}
             viewport={{ once: true, margin: "-30px" }}
-            transition={{ delay: 1.8 }}
+            transition={{ delay: 2.0 }}
             className="flex items-center bg-white p-3 sm:p-4 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg border border-orange-200 hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 cursor-pointer group"
           >
             <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
@@ -250,9 +275,9 @@ const SecurityContactIllustration = () => (
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div className="text-left flex-1 min-w-0">
-                <div className="font-bold text-gray-900 text-xs sm:text-sm">Our Office</div>
-                <div className="text-orange-600 font-semibold text-xs sm:text-sm">Sector 7, Gandhinagar</div>
-                <div className="text-xs text-gray-500 mt-0.5 sm:mt-1">Gujarat, India • Professional Consultation</div>
+                <div className="font-bold text-gray-900 text-xs sm:text-sm">Corporate Office (Gujarat)</div>
+                <div className="text-orange-600 font-semibold text-xs sm:text-sm">246/B, Purusangit Bunglow, Sector 7a</div>
+                <div className="text-xs text-gray-500 mt-0.5 sm:mt-1">Gandhinagar, Gujarat-382007, India</div>
               </div>
             </div>
             <div className="text-orange-500 group-hover:text-orange-600 transition-colors flex-shrink-0 ml-2">
@@ -261,7 +286,7 @@ const SecurityContactIllustration = () => (
           </motion.div>
         </motion.div>
 
-        {/* Security Status Banner */}
+        {/* Security Status Banner (No Change) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -286,13 +311,13 @@ const SecurityContactIllustration = () => (
         </motion.div>
       </div>
 
-      {/* Background Pattern */}
+      {/* Background Pattern (No Change) */}
       <div className="absolute inset-0 -z-10 opacity-5">
         <div className="absolute top-0 left-0 w-24 h-24 sm:w-32 sm:h-32 bg-[#1f8fce] rounded-full blur-2xl sm:blur-3xl"></div>
         <div className="absolute bottom-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-[#10b981] rounded-full blur-2xl sm:blur-3xl"></div>
       </div>
 
-      {/* Custom CSS for shield point */}
+      {/* Custom CSS for shield point (No Change) */}
       <style jsx>{`
         .clip-shield-point {
           clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
@@ -359,7 +384,7 @@ const handleSubmit = async (e) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      {/* Header Section */}
+      {/* Header Section (No Change) */}
       <section className="relative pt-6 pb-4 sm:pt-16 sm:pb-12 lg:pt-24 lg:pb-16 xl:pt-32 xl:pb-24 h-[35vh] xs:h-[40vh] sm:min-h-[50vh] lg:min-h-[60vh] xl:min-h-[70vh] bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce] overflow-hidden flex flex-col justify-center">
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
@@ -417,7 +442,7 @@ const handleSubmit = async (e) => {
         <div className="max-w-7xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 xl:gap-12">
             
-            {/* Left Column - Security Contact Illustration */}
+            {/* Left Column - Security Contact Illustration (Uses Revised Component) */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -430,7 +455,7 @@ const handleSubmit = async (e) => {
               </div>
             </motion.div>
 
-            {/* Right Column - Contact Form */}
+            {/* Right Column - Contact Form (No Change) */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -584,7 +609,7 @@ const handleSubmit = async (e) => {
         </div>
       </section>
 
-      {/* Full Width Map Section */}
+      {/* Full Width Map Section (No Change) */}
       <section className="w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

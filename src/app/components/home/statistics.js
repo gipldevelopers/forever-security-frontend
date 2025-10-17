@@ -4,10 +4,11 @@ import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 
 const stats = [
+  // REAL DATA CONTENT - Focused on professional service and regional presence
   { number: 99.8, label: "Client Satisfaction Rate", suffix: "%" },
-  { number: 15, label: "Years of Experience", suffix: "+" },
-  { number: 5000, label: "Systems Installed", suffix: "+" },
-  { number: 24, label: "Support Available", suffix: "/7" },
+  { number: 10, label: "Years of Professional Service", suffix: "+" }, // Changed label and number to align with About Us
+  { number: 300, label: "Active Sites Secured Daily", suffix: "+" }, // Replaced "Systems Installed"
+  { number: 24, label: "Vigilance & Support Available", suffix: "/7" }, // Changed label for clarity
 ];
 
 // Animation variants
@@ -66,8 +67,8 @@ const splitText = (text) => {
 
 // Animated Title Component
 const AnimatedTitle = () => {
-  const title = "Trusted by Thousands";
-  const highlight = "Trusted";
+  const title = "Your Safety is Our Track Record"; // REVISED TITLE
+  const highlight = "Track Record"; // REVISED HIGHLIGHT
   
   const parts = title.split(highlight);
   
@@ -189,7 +190,7 @@ export default function Statistics() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section - Responsive */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 dark:text-gray-100 font-montserrat mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 font-montserrat mb-4">
             <AnimatedTitle />
           </h2>
           <motion.p 
@@ -199,8 +200,8 @@ export default function Statistics() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-gray-600 dark:text-gray-300 text-sm sm:text-base font-poppins max-w-2xl mx-auto px-4"
           >
-            Our track record speaks for itself. With years of experience and thousands of satisfied clients, 
-            we deliver exceptional security solutions you can rely on.
+            {/* REVISED DESCRIPTION */}
+            Our commitment to safety is proven. With over a decade of experience and hundreds of active sites secured, we deliver reliable, professional security solutions across Gujarat.
           </motion.p>
         </div>
 

@@ -7,6 +7,72 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { apiService } from '@/app/lib/api';
 
+// ✨ Animated Title for Blog Section
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.03 }
+  }
+};
+
+const letterVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" }
+  }
+};
+
+const highlightVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5, ease: "backOut" }
+  }
+};
+
+const splitText = (text) => {
+  return text.split('').map((char, index) => (
+    <motion.span
+      key={index}
+      variants={letterVariants}
+      className="inline-block"
+    >
+      {char === ' ' ? '\u00A0' : char}
+    </motion.span>
+  ));
+};
+
+// 🧠 AnimatedTitle component for "Latest Blog Posts"
+const AnimatedBlogTitle = () => {
+  const title = "Latest Blog Posts";
+  const highlight = "Blog";
+
+  const parts = title.split(highlight);
+
+  return (
+    <motion.span
+      initial="hidden"
+      whileInView="visible"
+      variants={containerVariants}
+      viewport={{ once: true, margin: "-30px" }}
+      className="inline-block"
+    >
+      {splitText(parts[0])}
+      <motion.span 
+        variants={highlightVariants}
+        className="text-[#1f8fce] dark:text-[#4fbdf0] inline-block"
+      >
+        {splitText(highlight)}
+      </motion.span>
+      {parts[1] && splitText(parts[1])}
+    </motion.span>
+  );
+};
+
 const BlogCard = ({ post, index }) => {
   return (
     <motion.article
@@ -26,13 +92,6 @@ const BlogCard = ({ post, index }) => {
           alt={post.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        
-        {/* Category Badge */}
-        <div className="absolute top-3 sm:top-4 left-3 sm:left-4 z-10">
-          <span className="bg-white/95 text-[#1f8fce] px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold font-poppins backdrop-blur-sm">
-            {post.category || 'Security'}
-          </span>
-        </div>
       </Link>
 
       {/* Content */}
@@ -77,7 +136,6 @@ export default function BlogSection() {
       console.log('📝 API Response:', result);
       
       if (result && result.success) {
-        // Handle different response structures
         let blogs = [];
         
         if (Array.isArray(result.data)) {
@@ -90,7 +148,6 @@ export default function BlogSection() {
         
         console.log('📚 Processed blogs:', blogs);
         
-        // Get only published blogs and limit to 3 for the section
         const publishedBlogs = blogs
           .filter(post => !post.status || post.status === 'published')
           .slice(0, 3);
@@ -99,17 +156,14 @@ export default function BlogSection() {
         setBlogPosts(publishedBlogs);
       } else {
         console.warn('⚠️ No blog data found in response');
-        // Fallback to empty array
         setBlogPosts([]);
       }
     } catch (error) {
       console.error('❌ Error fetching blog posts:', error);
-      // Fallback to empty array on error
       setBlogPosts([]);
     }
   };
 
-  // If no blog posts, don't show the section at all
   if (!blogPosts || blogPosts.length === 0) {
     return null;
   }
@@ -130,9 +184,9 @@ export default function BlogSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -50px 0px" }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white font-montserrat mb-4 sm:mb-6"
+            className="text-4xl font-bold text-gray-900 dark:text-white font-montserrat mb-4 sm:mb-6"
           >
-            Latest Blog Posts
+            <AnimatedBlogTitle />
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -159,7 +213,7 @@ export default function BlogSection() {
           ))}
         </motion.div>
 
-        {/* View All Blogs Button */}
+        {/* Buttons Container - Responsive */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -167,15 +221,29 @@ export default function BlogSection() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="text-center"
         >
-          <Link
-            href="/blogs"
-            className="rounded-md px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-sm sm:text-base"
-          >
-            <span className="absolute w-48 sm:w-56 md:w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-16 sm:-translate-x-18 md:-translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-48 sm:group-hover:h-56 md:group-hover:h-64 group-hover:-translate-y-24 sm:group-hover:-translate-y-28 md:group-hover:-translate-y-32 ease"></span>
-            <span className="relative transition duration-300 ease font-semibold">
-              View All Blogs
-            </span>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* View All Blogs Button - Primary */}
+            <Link
+              href="/blogs"
+              className="rounded-md px-6 sm:px-8 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-white hover:border-[#1f8fce] hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base w-full sm:w-auto min-w-[140px]"
+            >
+              <span className="absolute w-48 sm:w-56 md:w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-16 sm:-translate-x-18 md:-translate-x-20 bg-white top-1/2 group-hover:h-48 sm:group-hover:h-56 md:group-hover:h-64 group-hover:-translate-y-24 sm:group-hover:-translate-y-28 md:group-hover:-translate-y-32 ease"></span>
+              <span className="relative transition duration-300 ease font-semibold">
+                View All Blogs
+              </span>
+            </Link>
+
+            {/* Contact Button - Secondary/Outline */}
+            <Link
+              href="/contact"
+              className="rounded-md px-6 sm:px-8 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium border-[#1f8fce] text-[#1f8fce] bg-transparent hover:bg-[#1f8fce] hover:text-white transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base w-full sm:w-auto min-w-[140px]"
+            >
+              <span className="absolute w-48 sm:w-56 md:w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-16 sm:-translate-x-18 md:-translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-48 sm:group-hover:h-56 md:group-hover:h-64 group-hover:-translate-y-24 sm:group-hover:-translate-y-28 md:group-hover:-translate-y-32 ease"></span>
+              <span className="relative transition duration-300 ease font-semibold">
+                Contact Us
+              </span>
+            </Link>
+          </div>
         </motion.div>
       </div>
     </section>

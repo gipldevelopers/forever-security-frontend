@@ -248,7 +248,7 @@ export default function ServicesSection() {
       <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white font-montserrat mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white font-montserrat mb-4">
             Our Security Services
           </h2>
           <p className="text-gray-200 text-sm sm:text-base max-w-2xl mx-auto mb-6">
@@ -361,7 +361,7 @@ export default function ServicesSection() {
           ))}
         </div>
 
-        {/* View All Button - Responsive */}
+        {/* Buttons Container - Responsive */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -369,15 +369,29 @@ export default function ServicesSection() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="text-center mt-8 sm:mt-12"
         >
-          <Link
-            href="/services"
-            className="rounded-md px-6 sm:px-8 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-sm sm:text-base"
-          >
-            <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
-            <span className="relative transition duration-300 ease font-semibold">
-              View All Services
-            </span>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* View All Services Button - Primary */}
+            <Link
+              href="/services"
+              className="rounded-md px-6 sm:px-8 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-[#1f8fce] hover:border-white hover:text-white transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base w-full sm:w-auto min-w-[140px]"
+            >
+              <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+              <span className="relative transition duration-300 ease font-semibold">
+                View All Services
+              </span>
+            </Link>
+
+            {/* Contact Button - Secondary/Outline */}
+            <Link
+              href="/contact"
+              className="rounded-md px-6 sm:px-8 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium border-white text-white bg-transparent hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base w-full sm:w-auto min-w-[140px]"
+            >
+              <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+              <span className="relative transition duration-300 ease font-semibold">
+                Contact Us
+              </span>
+            </Link>
+          </div>
         </motion.div>
       </div>
     </section>

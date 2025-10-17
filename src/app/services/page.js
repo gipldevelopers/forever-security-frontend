@@ -311,9 +311,8 @@ export default function ServicesPage() {
               transition={{ delay: 0.5, duration: 0.6 }}
               className="text-sm sm:text-lg md:text-xl lg:text-2xl text-white/90 font-poppins max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-6 px-2 sm:px-0"
             >
-              Comprehensive security solutions tailored to protect your business, home, and digital assets with cutting-edge technology
+              Comprehensive, licensed security solutions tailored to protect your business, home, and digital assets across Gujarat.
             </motion.p>
-
             {/* Animated CTA Button */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -359,60 +358,53 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* CTA Section - Services Focused */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white font-montserrat mb-4">
-              <AnimatedTitle
-                title="Start Your Security Journey Today"
-                highlight="Security Journey"
-              />
-            </h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-white/90 font-poppins text-lg sm:text-xl mb-8 max-w-2xl mx-auto"
-            >
-              Choose from our comprehensive security services and get professional protection for your home, business, or digital assets
-            </motion.p>
+      {/* CTA Section - Services Focused - REVISED CONTENT */}
+<section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
+  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.8 }}
+    >
+      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white font-montserrat mb-4">
+        <AnimatedTitle
+          title="Ready for Vigilance You Can Trust?"
+          highlight="Vigilance"
+        />
+      </h2>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="text-white/90 font-poppins text-lg sm:text-xl mb-8 max-w-2xl mx-auto"
+      >
+        Talk to our specialists about manned guarding, surveillance, or investigation services tailored for your property in Gujarat.
+      </motion.p>
 
-            {/* Buttons inline on mobile and desktop */}
-            <motion.div
-              className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full max-w-2xl mx-auto"
-            >
-              {/* Primary Button: Get Security Assessment - Longer */}
-              <Link
-                href="/contact"
-                className="w-full sm:w-auto rounded-md px-8 sm:px-12 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base whitespace-nowrap min-w-[200px]"
-              >
-                <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
-                <span className="relative transition duration-300 ease font-semibold">
-                  Get Security Assessment
-                </span>
-              </Link>
+      {/* Buttons inline on mobile and desktop - MODIFIED to one button */}
+      <motion.div
+        className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full max-w-2xl mx-auto"
+      >
+        {/* Primary Button: Get Security Assessment - Longer (Now the only button) */}
+        <Link
+          href="/contact"
+          // Class modified to ensure it centers nicely when alone
+          className="w-full sm:w-auto rounded-md px-8 sm:px-12 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base whitespace-nowrap min-w-[200px]"
+        >
+          <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+          <span className="relative transition duration-300 ease font-semibold">
+            Get Free Security Quote
+          </span>
+        </Link>
 
-              {/* Secondary Button: Browse Services */}
-              <Link
-                href="/services"
-                className="w-full sm:w-auto rounded-md px-8 sm:px-12 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-transparent border-white text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center justify-center text-sm sm:text-base whitespace-nowrap min-w-[200px]"
-              >
-                <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
-                <span className="relative transition duration-300 ease font-semibold">
-                  Browse All Services
-                </span>
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+        {/* Removed Secondary Button: Contact Sales Team */}
+        
+      </motion.div>
+    </motion.div>
+  </div>
+</section>
     </div>
   );
 }

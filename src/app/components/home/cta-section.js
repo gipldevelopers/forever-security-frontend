@@ -1,8 +1,97 @@
 'use client';
 import { motion } from 'framer-motion';
 
-// Removed 'next/link' import and 'use client' directive
-// Using standard <a> tags for navigation instead
+// --- Start of Title Animation Logic from FAQ Section ---
+
+// Split text animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.03
+    }
+  }
+};
+
+const letterVariants = {
+  hidden: {
+    opacity: 0,
+    y: 20
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut"
+    }
+  }
+};
+
+const highlightVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: "backOut"
+    }
+  }
+};
+
+// Split text into letters for animation
+const splitText = (text) => {
+  return text.split('').map((char, index) => (
+    <motion.span
+      key={index}
+      variants={letterVariants}
+      className="inline-block"
+    >
+      {char === ' ' ? '\u00A0' : char}
+    </motion.span>
+  ));
+};
+
+// Animated Title Component for the CTA section
+const AnimatedCtaTitle = ({ title, highlight }) => {
+  const parts = title.split(highlight);
+
+  return (
+    <motion.span
+      initial="hidden"
+      whileInView="visible"
+      variants={containerVariants}
+      // Added margin to ensure it triggers before scrolling completely into view
+      viewport={{ once: true, margin: "-50px" }} 
+      className="inline-block"
+    >
+      {/* First part */}
+      {splitText(parts[0])}
+
+      {/* Highlighted part (if it exists) */}
+      {highlight && (
+        <motion.span
+          variants={highlightVariants}
+          // Using a light highlight color for the dark CTA background
+          className="text-cyan-300 inline-block" 
+        >
+          {splitText(highlight)}
+        </motion.span>
+      )}
+
+      {/* Second part if exists */}
+      {parts[1] && splitText(parts[1])}
+    </motion.span>
+  );
+};
+
+// --- End of Title Animation Logic ---
+
 
 export default function CtaSection() {
   return (
@@ -18,23 +107,23 @@ export default function CtaSection() {
             transition={{ duration: 0.8 }}
             className="text-white text-center lg:text-left"
           >
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-balance text-3xl font-semibold md:text-4xl lg:text-5xl font-montserrat mb-6"
-            >
-              Ready to Power up your{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300">
-                Savings
-              </span>{' '}
-              and{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300">
-                Reliability
-              </span>
-              ?
-            </motion.h2>
+            {/* REPLACED the original h2 with the new AnimatedCtaTitle component.
+              The original text was: "Ready to Power up your Security and Peace?"
+              We'll highlight "Security" and "Peace". To do this with the current logic, 
+              we can wrap the whole title in AnimatedCtaTitle and highlight only one word, 
+              or simplify the title structure. 
+              
+              For a cleaner animation that highlights 'Security', we will simplify the structure:
+              Title: "Ready to Power up your Security and Peace?"
+              Highlight: "Security"
+            */}
+            <h2 className="text-balance text-3xl font-semibold md:text-4xl lg:text-5xl font-montserrat mb-6">
+              <AnimatedCtaTitle
+                title="Ready to Power up your Security and Peace?"
+                highlight="Security" // This word will use the highlight animation (scale-in) and color (text-cyan-300)
+              />
+            </h2>
+
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -43,9 +132,8 @@ export default function CtaSection() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="text-gray-200 mb-8 text-lg md:text-xl font-poppins leading-relaxed"
             >
-              Join thousands of satisfied clients who trust us with their security needs. 
-              Get started today and experience the peace of mind that comes with professional 
-              security solutions.
+              Join hundreds of satisfied clients who trust us with their security needs across Gujarat. 
+              Get started today and protect what matters most with professional security solutions.
             </motion.p>
 
             {/* CTA Buttons (Centered on mobile) */}
@@ -59,7 +147,7 @@ export default function CtaSection() {
               {/* Replaced Next.js Link with standard <a> tag */}
               <a
                 href="/get-started"
-                className="rounded-md px-8 py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-lg font-semibold"
+                className="rounded-md px-8 py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-[#1f8fce] hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-lg font-semibold"
               >
                 <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
                 <span className="relative transition duration-300 ease font-semibold">
@@ -99,7 +187,7 @@ export default function CtaSection() {
                     <span className="text-xs font-bold text-white">✓</span>
                   </div>
                 </div>
-                <span className="font-semibold">Join 5,000+ Security Clients</span>
+                <span className="font-semibold">Join 300+ Active Security Sites</span>
               </div>
               
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/20">
@@ -182,8 +270,8 @@ const ModernSecurityIllustration = () => (
             transition={{ delay: 0.7 }}
             className="text-center p-4 bg-white/5 rounded-xl border border-white/10"
           >
-            <div className="text-2xl font-bold text-white font-montserrat">99.9%</div>
-            <div className="text-cyan-200 text-sm font-poppins">Uptime</div>
+            <div className="text-2xl font-bold text-white font-montserrat">99.8%</div> {/* Updated to match stats section */}
+            <div className="text-cyan-200 text-sm font-poppins">Satisfaction</div> {/* Updated label */}
           </motion.div>
           
           <motion.div
@@ -194,16 +282,16 @@ const ModernSecurityIllustration = () => (
             className="text-center p-4 bg-white/5 rounded-xl border border-white/10"
           >
             <div className="text-2xl font-bold text-white font-montserrat">24/7</div>
-            <div className="text-cyan-200 text-sm font-poppins">Support</div>
+            <div className="text-cyan-200 text-sm font-poppins">Vigilance</div> {/* Updated label */}
           </motion.div>
         </div>
 
         {/* Security Features */}
         <div className="space-y-3">
           {[
-            { text: "Advanced Threat Protection", icon: "🛡️" },
-            { text: "Real-time Monitoring", icon: "📊" },
-            { text: "Instant Alerts", icon: "🔔" }
+            { text: "Licensed, Trained Personnel", icon: "🛡️" }, // Updated text
+            { text: "Real-time Site Monitoring", icon: "📊" }, // Updated text
+            { text: "Immediate Incident Response", icon: "🔔" } // Updated text
           ].map((feature, index) => (
             <motion.div
               key={index}

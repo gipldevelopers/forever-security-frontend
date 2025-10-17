@@ -10,21 +10,28 @@ export default function HeroSection() {
   const [startX, setStartX] = useState(0);
   const sliderRef = useRef(null);
 
-  // Slide data with local images
+  // Slide data with local images - REAL DATA CONTENT
   const slides = [
     {
       id: 1,
       backgroundImage: '/images/2148404004.jpg',
-      title: 'Your Safety is Our Priority',
-      highlight: 'Safety',
-      subtitle: 'Professional security solutions tailored to protect your business, home, and peace of mind.'
+      title: 'Count on us for Professional Security',
+      highlight: 'Professional Security',
+      subtitle: 'Reliable, vigilant, and comprehensive security solutions across Commercial, Residential, and Event venues in Gujarat.'
     },
     {
       id: 2,
       backgroundImage: '/images/security-guard-officer-group_1016675-833.jpg',
-      title: '24/7 Security Monitoring',
-      highlight: 'Monitoring',
-      subtitle: 'Round-the-clock surveillance and rapid response teams for ultimate protection.'
+      title: '24/7 Elite Guard Deployment',
+      highlight: 'Elite Guard',
+      subtitle: 'Highly trained personnel and technology-driven response teams for ultimate, round-the-clock protection.'
+    },
+    {
+      id: 3,
+      backgroundImage: '/images/3rd.jpg', // Placeholder image - replace with a relevant one
+      title: 'Tech-Driven Security Solutions',
+      highlight: 'Tech-Driven',
+      subtitle: 'Combining smart surveillance, real-time monitoring, and advanced access controls for maximum asset safety.'
     }
   ];
 
@@ -252,6 +259,20 @@ export default function HeroSection() {
           </div>
         </div>
       </main>
+
+      {/* Slide Indicators (Dots) */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              index === currentSlide ? 'bg-[#1f8fce] w-6' : 'bg-white/50'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
     </section>
   );
 }

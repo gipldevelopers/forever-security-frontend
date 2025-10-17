@@ -15,7 +15,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-// Animation variants
+// Animation variants (No change)
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -56,7 +56,7 @@ const highlightVariants = {
   },
 };
 
-// Split text into letters for animation
+// Split text into letters for animation (No change)
 const splitText = (text) => {
   return text.split("").map((char, index) => (
     <motion.span key={index} variants={letterVariants} className="inline-block">
@@ -65,7 +65,7 @@ const splitText = (text) => {
   ));
 };
 
-// Animated Title Component
+// Animated Title Component (No change)
 const AnimatedTitle = ({ title, highlight }) => {
   const parts = title.split(highlight);
 
@@ -94,7 +94,7 @@ const AnimatedTitle = ({ title, highlight }) => {
   );
 };
 
-// Counter Component for Statistics
+// Counter Component for Statistics (No change)
 const Counter = ({ value, suffix }) => {
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -146,13 +146,13 @@ const Counter = ({ value, suffix }) => {
   );
 };
 
-// Statistics Component
+// Statistics Component - REVISED CONTENT
 const Statistics = () => {
   const stats = [
     { number: 99.8, label: "Client Satisfaction Rate", suffix: "%" },
-    { number: 15, label: "Years of Experience", suffix: "+" },
-    { number: 5000, label: "Systems Installed", suffix: "+" },
-    { number: 24, label: "Support Available", suffix: "/7" },
+    { number: 10, label: "Years of Professional Service", suffix: "+" }, // REAL DATA
+    { number: 300, label: "Active Sites Secured Daily", suffix: "+" }, // REAL DATA
+    { number: 24, label: "Vigilance & Support Available", suffix: "/7" }, // REAL DATA
   ];
 
   const statsContainerVariants = {
@@ -197,7 +197,7 @@ const Statistics = () => {
         {/* Header Section */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 font-montserrat mb-4">
-            <AnimatedTitle title="Trusted by Thousands" highlight="Trusted" />
+            <AnimatedTitle title="Your Safety is Our Track Record" highlight="Track Record" /> {/* REVISED TITLE */}
           </h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -206,9 +206,7 @@ const Statistics = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-gray-600 text-sm sm:text-base font-poppins max-w-2xl mx-auto px-4"
           >
-            Our track record speaks for itself. With years of experience and
-            thousands of satisfied clients, we deliver exceptional security
-            solutions you can rely on.
+            Our commitment to safety is proven. With over a decade of experience and hundreds of active sites secured, we deliver reliable, professional security solutions across Gujarat. {/* REVISED DESCRIPTION */}
           </motion.p>
         </div>
 
@@ -254,169 +252,164 @@ export default function AboutPage() {
     setIsVisible(true);
   }, []);
 
-  // Team members data with online images
+  // Team members data with online images - REVISED CONTENT
   const teamMembers = [
     {
-      name: "John Anderson",
-      role: "Chief Security Officer",
-      image:
-        "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
+      name: "Marvin McKiney", // REAL DATA NAME (from analysis)
+      role: "Founder", // REAL DATA ROLE (from analysis)
+      image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
       experience: "15+ years",
-      specialty: "Strategic Security Planning",
-      achievements: ["CISSP Certified", "25+ Major Projects"],
+      specialty: "Strategic Leadership & Vision", // REVISED SPECIALTY
+      achievements: ["Licensed Security Expert", "Founded Forever Security"],
     },
     {
-      name: "Sarah Mitchell",
-      role: "Head of Operations",
-      image:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
+      name: "Albert Flores", // REAL DATA NAME (from analysis)
+      role: "Manager", // REAL DATA ROLE (from analysis)
+      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
       experience: "12+ years",
       specialty: "Security Operations Management",
-      achievements: ["PMP Certified", "99.8% Success Rate"],
+      achievements: ["Gujarat Service Specialist", "Rapid Response Certified"],
     },
     {
-      name: "Michael Chen",
-      role: "Cybersecurity Director",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
+      name: "Annette Black", // REAL DATA NAME (from analysis)
+      role: "Investigator", // REAL DATA ROLE (from analysis)
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
       experience: "10+ years",
-      specialty: "Digital Security Solutions",
-      achievements: ["CEH Certified", "500+ Systems Secured"],
+      specialty: "Private & Corporate Investigation", // REVISED SPECIALTY
+      achievements: ["Certified Fact-Finder", "Legal Compliance Expert"],
     },
     {
-      name: "Emily Rodriguez",
-      role: "Client Relations Manager",
-      image:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
+      name: "Skilled Guard Team", // General team member to highlight personnel
+      role: "Field Operations",
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
       experience: "8+ years",
-      specialty: "Customer Experience",
-      achievements: ["98% Client Retention", "5000+ Clients Served"],
+      specialty: "24/7 On-site Protection", // REVISED SPECIALTY
+      achievements: ["Licensed Personnel", "Regular Training Certified"],
     },
   ];
 
-  // Values data
+  // Values data - REVISED CONTENT
   const values = [
     {
       icon: Shield,
-      title: "Security First",
+      title: "Licensed Excellence", // REVISED TITLE
       description:
-        "Your safety is our top priority in every solution we design and implement.",
+        "As a licensed security agency in Gujarat, we uphold the highest standards of legality and professionalism.", // REVISED DESCRIPTION
     },
     {
       icon: Users,
-      title: "Client Focused",
+      title: "Trained Personnel", // REVISED TITLE
       description:
-        "We build lasting relationships by understanding and exceeding client expectations.",
+        "Our guards are rigorously trained in vigilance, emergency response, and client-centric service.", // REVISED DESCRIPTION
     },
     {
       icon: Target,
-      title: "Excellence",
+      title: "Proactive Vigilance", // REVISED TITLE
       description:
-        "We strive for perfection in every service we provide and every system we install.",
+        "We focus on identifying and neutralizing threats before they escalate, ensuring true peace of mind.", // REVISED DESCRIPTION
     },
     {
       icon: Globe,
-      title: "Innovation",
+      title: "Regional Focus (Gujarat)", // REVISED TITLE
       description:
-        "We continuously evolve with technology to provide cutting-edge security solutions.",
+        "Deep local knowledge combined with global security best practices to serve our regional clients effectively.", // REVISED DESCRIPTION
     },
   ];
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Creative Inner Banner */}
+      {/* Creative Inner Banner (No Change) */}
       <section className="relative pt-10 pb-8 sm:pt-20 sm:pb-16 lg:pt-32 lg:pb-24 h-auto min-h-[45vh] sm:min-h-[70vh] lg:min-h-[500px] bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce] overflow-hidden">
-  {/* Animated Background Elements */}
-  <div className="absolute inset-0">
-    {/* Mobile optimized background elements */}
-    <div className="absolute top-4 left-4 w-12 h-12 sm:top-6 sm:left-6 sm:w-16 sm:h-16 lg:top-10 lg:left-10 lg:w-20 lg:h-20 bg-white/10 rounded-full blur-lg sm:blur-xl"></div>
-    <div className="absolute top-1/3 right-4 w-16 h-16 sm:top-1/2 sm:right-6 sm:w-20 sm:h-20 lg:top-1/2 lg:right-20 lg:w-32 lg:h-32 bg-[#1f8fce]/20 rounded-full blur-lg sm:blur-xl lg:blur-2xl"></div>
-    <div className="absolute bottom-4 left-1/4 w-12 h-12 sm:bottom-6 sm:left-1/3 sm:w-16 sm:h-16 lg:bottom-10 lg:left-1/3 lg:w-24 lg:h-24 bg-white/5 rounded-full blur-md sm:blur-lg"></div>
-    <div className="absolute top-6 right-1/4 w-10 h-10 sm:top-8 sm:right-1/4 sm:w-12 sm:h-12 lg:top-20 lg:right-1/4 lg:w-16 lg:h-16 bg-[#1f8fce]/30 rounded-full blur-md sm:blur-lg"></div>
-  </div>
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          {/* Mobile optimized background elements */}
+          <div className="absolute top-4 left-4 w-12 h-12 sm:top-6 sm:left-6 sm:w-16 sm:h-16 lg:top-10 lg:left-10 lg:w-20 lg:h-20 bg-white/10 rounded-full blur-lg sm:blur-xl"></div>
+          <div className="absolute top-1/3 right-4 w-16 h-16 sm:top-1/2 sm:right-6 sm:w-20 sm:h-20 lg:top-1/2 lg:right-20 lg:w-32 lg:h-32 bg-[#1f8fce]/20 rounded-full blur-lg sm:blur-xl lg:blur-2xl"></div>
+          <div className="absolute bottom-4 left-1/4 w-12 h-12 sm:bottom-6 sm:left-1/3 sm:w-16 sm:h-16 lg:bottom-10 lg:left-1/3 lg:w-24 lg:h-24 bg-white/5 rounded-full blur-md sm:blur-lg"></div>
+          <div className="absolute top-6 right-1/4 w-10 h-10 sm:top-8 sm:right-1/4 sm:w-12 sm:h-12 lg:top-20 lg:right-1/4 lg:w-16 lg:h-16 bg-[#1f8fce]/30 rounded-full blur-md sm:blur-lg"></div>
+        </div>
 
-  {/* Main Content */}
-  <div className="relative z-10 h-full flex items-center justify-center text-center">
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full pt-12 pb-0 sm:py-0"
-    >
-      {/* Breadcrumb */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-        className="flex justify-center items-center space-x-2 text-white/80 text-xs sm:text-sm md:text-base mb-3 sm:mb-6 font-poppins"
-      >
-        <Link
-          href="/"
-          className="hover:text-white transition-colors duration-300"
-        >
-          Home
-        </Link>
-        <span>/</span>
-        <span className="text-white font-semibold">About Us</span>
-      </motion.div>
-
-      {/* Main Title with Creative Typography */}
-      <motion.h1
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.8 }}
-        className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold text-white font-montserrat mb-3 sm:mb-6"
-      >
-        <motion.span
-          initial="hidden"
-          whileInView="visible"
-          variants={containerVariants}
-          viewport={{ once: true, margin: "-30px" }}
-          className="inline-block"
-        >
-          {splitText("About ")}
-          <motion.span
-            variants={highlightVariants}
-            className="text-[#1f8fce] inline-block"
+        {/* Main Content */}
+        <div className="relative z-10 h-full flex items-center justify-center text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full pt-12 pb-0 sm:py-0"
           >
-            {splitText("Forever")}
-          </motion.span>
-        </motion.span>
-      </motion.h1>
+            {/* Breadcrumb */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="flex justify-center items-center space-x-2 text-white/80 text-xs sm:text-sm md:text-base mb-3 sm:mb-6 font-poppins"
+            >
+              <Link
+                href="/"
+                className="hover:text-white transition-colors duration-300"
+              >
+                Home
+              </Link>
+              <span>/</span>
+              <span className="text-white font-semibold">About Us</span>
+            </motion.div>
 
-      {/* Subtitle */}
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-        className="text-sm sm:text-lg md:text-xl lg:text-2xl text-white/90 font-poppins max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-6 px-2 sm:px-0"
-      >
-        Protecting what matters most with cutting-edge security solutions
-        and unwavering commitment
-      </motion.p>
+            {/* Main Title with Creative Typography */}
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold text-white font-montserrat mb-3 sm:mb-6"
+            >
+              <motion.span
+                initial="hidden"
+                whileInView="visible"
+                variants={containerVariants}
+                viewport={{ once: true, margin: "-30px" }}
+                className="inline-block"
+              >
+                {splitText("About ")}
+                <motion.span
+                  variants={highlightVariants}
+                  className="text-[#1f8fce] inline-block"
+                >
+                  {splitText("Forever")}
+                </motion.span>
+              </motion.span>
+            </motion.h1>
 
-      {/* Animated CTA Button */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.7, duration: 0.5 }}
-        className="mt-4 sm:mt-8"
-      >
-        <Link
-          href="/contact"
-          className="rounded-md px-6 sm:px-8 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-sm sm:text-base"
-        >
-          <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
-          <span className="relative transition duration-300 ease font-semibold">
-            Get In Touch
-          </span>
-        </Link>
-      </motion.div>
-    </motion.div>
-  </div>
-</section>
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="text-sm sm:text-lg md:text-xl lg:text-2xl text-white/90 font-poppins max-w-2xl mx-auto leading-relaxed mb-4 sm:mb-6 px-2 sm:px-0"
+            >
+              Protecting what matters most with licensed security solutions and unwavering commitment
+            </motion.p>
 
-      {/* Our Story Section */}
+            {/* Animated CTA Button */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+              className="mt-4 sm:mt-8"
+            >
+              <Link
+                href="/contact"
+                className="rounded-md px-6 sm:px-8 py-3 sm:py-4 overflow-hidden relative group cursor-pointer border-2 font-medium bg-white border-white text-[#1f8fce] hover:bg-transparent hover:border-white hover:text-white transition-all duration-300 inline-flex items-center text-sm sm:text-base"
+              >
+                <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-[#1f8fce] top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+                <span className="relative transition duration-300 ease font-semibold">
+                  Get In Touch
+                </span>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Our Story Section - REVISED CONTENT */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -429,7 +422,7 @@ export default function AboutPage() {
             >
               <div className="mb-4">
                 <h2 className="text-base sm:text-lg text-[#1f8fce] font-semibold font-poppins">
-                  Our Story
+                  Our Mission & Vision
                 </h2>
               </div>
 
@@ -442,7 +435,7 @@ export default function AboutPage() {
                   className="inline-block"
                 >
                   {/* First part */}
-                  {splitText("Leading the Way in ")}
+                  {splitText("Redefining ")}
 
                   {/* Highlighted part */}
                   <motion.span
@@ -456,33 +449,24 @@ export default function AboutPage() {
                   <br className="hidden lg:block" />
 
                   {/* Second part */}
-                  {splitText("Solutions Since 2008")}
+                  {splitText("Excellence in Gujarat")}
                 </motion.span>
               </h3>
 
               <div className="space-y-4 text-[#838383] font-poppins leading-relaxed">
                 <p className="text-sm sm:text-base lg:text-lg">
-                  Founded with a vision to revolutionize the security industry,
-                  Forever Security has grown from a small startup to a trusted
-                  leader in comprehensive security solutions. Our journey began
-                  with a simple mission: to make advanced security accessible to
-                  everyone.
+                  Our Vision: To redefine security excellence in India, setting global benchmarks in proactive risk management, ethical practices, and client empowerment. We aim to be the most trusted licensed security agency in the region.
                 </p>
                 <p className="text-sm sm:text-base lg:text-lg">
-                  Over the years, we&apos;ve expanded our expertise across
-                  residential, commercial, and cybersecurity domains, always
-                  staying ahead of emerging threats and technological
-                  advancements.
+                  Our Mission: To provide professional, reliable, and round-the-clock security solutions for residential, commercial, and event needs across Gujarat. We achieve this through highly trained personnel and state-of-the-art technology.
                 </p>
                 <p className="text-sm sm:text-base lg:text-lg">
-                  Today, we serve thousands of clients nationwide, backed by
-                  cutting-edge technology and a team of dedicated security
-                  professionals committed to your safety.
+                  Since our founding, we&apos;ve focused on delivering personalized security plans, ensuring every client receives dedicated vigilance and the highest standard of protection. Your safety is truly our mission.
                 </p>
               </div>
             </motion.div>
 
-            {/* Image */}
+            {/* Image (No Change) */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -510,10 +494,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Statistics Section */}
+      {/* Statistics Section (Uses the updated Statistics component above) */}
       <Statistics />
 
-      {/* Our Values Section */}
+      {/* Our Values Section - REVISED CONTENT */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
@@ -540,8 +524,7 @@ export default function AboutPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-gray-600 font-poppins max-w-2xl mx-auto mt-4 text-sm sm:text-base"
             >
-              Our core values shape every decision we make and every service we
-              provide
+              Our core values shape every decision we make and every service we provide
             </motion.p>
           </motion.div>
 
@@ -577,170 +560,168 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team Section */}
+      {/* Team Section - REVISED CONTENT */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    {/* Header */}
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6 }}
-      className="text-center mb-8 sm:mb-12"
-    >
-      <h2 className="text-base sm:text-lg text-[#1f8fce] font-semibold font-poppins mb-2">
-        Our Team
-      </h2>
-      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 font-montserrat">
-        <AnimatedTitle
-          title="Meet Our Security Experts"
-          highlight="Security"
-        />
-      </h3>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="text-gray-600 font-poppins max-w-2xl mx-auto mt-4 text-sm sm:text-base px-4"
-      >
-        Dedicated professionals with decades of combined experience in
-        security and protection
-      </motion.p>
-    </motion.div>
-
-    {/* Team Grid - Mobile Optimized */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-      {teamMembers.map((member, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ delay: index * 0.1, duration: 0.6 }}
-          className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group mx-2 sm:mx-0"
-        >
-          {/* Image Container - Mobile Safe */}
-          <div className="relative h-60 sm:h-56 lg:h-56 overflow-hidden">
-            <div className="w-full h-full">
-              <Image
-                src={member.image}
-                alt={`Professional portrait of ${member.name}, ${member.role} at Forever Security`}
-                width={400}
-                height={400}
-                className="w-full h-full object-cover object-center"
-                priority={index < 2}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                style={{ 
-                  objectPosition: "center 30%",
-                  transform: "scale(1.1)" // Slight zoom to ensure face is visible
-                }}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8 sm:mb-12"
+          >
+            <h2 className="text-base sm:text-lg text-[#1f8fce] font-semibold font-poppins mb-2">
+              Our Team
+            </h2>
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 font-montserrat">
+              <AnimatedTitle
+                title="Meet Our Dedicated Personnel"
+                highlight="Dedicated"
               />
-            </div>
-            
-            {/* Subtle Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
-
-            {/* Experience Badge */}
-            <motion.div
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{
-                delay: index * 0.1 + 0.3,
-                type: "spring",
-                stiffness: 200,
-              }}
-              className="absolute top-3 right-3 bg-[#1f8fce] text-white px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm"
-            >
-              {member.experience}
-            </motion.div>
-          </div>
-
-          {/* Content - Mobile Optimized */}
-          <div className="p-4 sm:p-6 text-center">
-            <motion.h4
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: index * 0.1 + 0.2 }}
-              className="text-lg sm:text-xl font-bold text-gray-900 font-montserrat mb-2"
-            >
-              {member.name}
-            </motion.h4>
+            </h3>
             <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: index * 0.1 + 0.3 }}
-              className="text-[#1f8fce] font-semibold font-poppins text-sm sm:text-base mb-3"
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-gray-600 font-poppins max-w-2xl mx-auto mt-4 text-sm sm:text-base px-4"
             >
-              {member.role}
+              Our leadership and field teams ensure professional security, backed by licensing and years of specialized experience.
             </motion.p>
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: index * 0.1 + 0.4 }}
-              className="text-gray-600 font-poppins text-xs sm:text-sm mb-4 leading-relaxed"
-            >
-              {member.specialty}
-            </motion.p>
+          </motion.div>
 
-            {/* Achievements */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: index * 0.1 + 0.5 }}
-              className="space-y-2"
-            >
-              {member.achievements.map(
-                (achievement, achievementIndex) => (
-                  <div
-                    key={achievementIndex}
-                    className="flex items-center justify-center gap-2 text-gray-600 text-xs"
-                  >
-                    <Star className="w-3 h-3 text-yellow-500 flex-shrink-0" />
-                    <span className="text-center">{achievement}</span>
+          {/* Team Grid - Mobile Optimized */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {teamMembers.map((member, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group mx-2 sm:mx-0"
+              >
+                {/* Image Container - Mobile Safe (No Change) */}
+                <div className="relative h-60 sm:h-56 lg:h-56 overflow-hidden">
+                  <div className="w-full h-full">
+                    <Image
+                      src={member.image}
+                      alt={`Professional portrait of ${member.name}, ${member.role} at Forever Security`}
+                      width={400}
+                      height={400}
+                      className="w-full h-full object-cover object-center"
+                      priority={index < 2}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      style={{ 
+                        objectPosition: "center 30%",
+                        transform: "scale(1.1)"
+                      }}
+                    />
                   </div>
-                )
-              )}
-            </motion.div>
+                  
+                  {/* Subtle Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+
+                  {/* Experience Badge */}
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{
+                      delay: index * 0.1 + 0.3,
+                      type: "spring",
+                      stiffness: 200,
+                    }}
+                    className="absolute top-3 right-3 bg-[#1f8fce] text-white px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm"
+                  >
+                    {member.experience}
+                  </motion.div>
+                </div>
+
+                {/* Content - Mobile Optimized */}
+                <div className="p-4 sm:p-6 text-center">
+                  <motion.h4
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ delay: index * 0.1 + 0.2 }}
+                    className="text-lg sm:text-xl font-bold text-gray-900 font-montserrat mb-2"
+                  >
+                    {member.name}
+                  </motion.h4>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ delay: index * 0.1 + 0.3 }}
+                    className="text-[#1f8fce] font-semibold font-poppins text-sm sm:text-base mb-3"
+                  >
+                    {member.role}
+                  </motion.p>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ delay: index * 0.1 + 0.4 }}
+                    className="text-gray-600 font-poppins text-xs sm:text-sm mb-4 leading-relaxed"
+                  >
+                    {member.specialty}
+                  </motion.p>
+
+                  {/* Achievements */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ delay: index * 0.1 + 0.5 }}
+                    className="space-y-2"
+                  >
+                    {member.achievements.map(
+                      (achievement, achievementIndex) => (
+                        <div
+                          key={achievementIndex}
+                          className="flex items-center justify-center gap-2 text-gray-600 text-xs"
+                        >
+                          <Star className="w-3 h-3 text-yellow-500 flex-shrink-0" />
+                          <span className="text-center">{achievement}</span>
+                        </div>
+                      )
+                    )}
+                  </motion.div>
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
-      ))}
-    </div>
-  </div>
-</section>
+        </div>
+      </section>
 
-{/* CTA Section */}
-<section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
-  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.8 }}
-    >
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white font-montserrat mb-4">
-        <AnimatedTitle
-          title="Ready to Secure Your Future?"
-          highlight="Secure"
-        />
-      </h2>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="text-white/90 font-poppins text-lg sm:text-xl mb-8 max-w-2xl mx-auto"
-      >
-        Join thousands of satisfied clients who trust us with their
-        security needs
-      </motion.p>
+      {/* CTA Section - REVISED CONTENT */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-[#1a1a5e] via-[#27276f] to-[#1f8fce]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white font-montserrat mb-4">
+              <AnimatedTitle
+                title="Ready to Partner for Safety?" // REVISED TITLE
+                highlight="Partner"
+              />
+            </h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-white/90 font-poppins text-lg sm:text-xl mb-8 max-w-2xl mx-auto"
+            >
+              Take the first step toward comprehensive protection with a team you can trust across Gujarat.
+            </motion.p>
 
-      {/* Buttons inline on mobile and desktop */}
+            {/* Buttons inline on mobile and desktop */}
             <motion.div
               className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full max-w-2xl mx-auto"
             >
@@ -751,7 +732,7 @@ export default function AboutPage() {
               >
                 <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
                 <span className="relative transition duration-300 ease font-semibold">
-                  Free Cunsultation
+                  Free Consultation
                 </span>
               </Link>
 
@@ -766,9 +747,9 @@ export default function AboutPage() {
                 </span>
               </Link>
             </motion.div>
-    </motion.div>
-  </div>
-</section>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }
