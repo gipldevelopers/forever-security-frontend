@@ -204,7 +204,7 @@ export default function CtaSection() {
             </motion.div>
           </motion.div>
 
-          {/* Right Side - Modern Security Illustration (Centered on all screens) */}
+          {/* Right Side - Modern Security Illustration (Centered on all screen) */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
