@@ -173,7 +173,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-[70vh] sm:h-screen w-full overflow-hidden"
       ref={sliderRef}
       onMouseDown={handleDragStart}
       onMouseUp={handleDragEnd}
@@ -214,7 +214,7 @@ export default function HeroSection() {
               >
                 {/* Main Headline with Split Text Animation - Improved wrapping */}
                 <motion.h1
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 font-montserrat leading-tight break-words px-2"
+                  className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-6 font-montserrat leading-tight break-words px-2"
                 >
                   {renderAnimatedTitle(slides[currentSlide].title, slides[currentSlide].highlight)}
                 </motion.h1>
@@ -222,7 +222,7 @@ export default function HeroSection() {
                 {/* Subtext/Description - Responsive */}
                 <motion.p
                   variants={subtitleVariants}
-                  className="text-base sm:text-lg md:text-xl text-white max-w-xl mx-auto px-4 font-poppins leading-relaxed"
+                  className="text-sm sm:text-lg md:text-xl text-white max-w-xl mx-auto px-4 font-poppins leading-relaxed mb-4 sm:mb-6"
                 >
                   {slides[currentSlide].subtitle}
                 </motion.p>
@@ -230,12 +230,12 @@ export default function HeroSection() {
                 {/* Action Buttons - Properly centered on all screens */}
                 <motion.div
                   variants={buttonsVariants}
-                  className="mt-6 sm:mt-8 flex flex-row justify-center items-center space-x-3 sm:space-x-4 w-full max-w-xs sm:max-w-md mx-auto"
+                  className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 w-full max-w-xs sm:max-w-md mx-auto"
                 >
                   {/* Primary Button: Our Services */}
                   <Link
                     href="/services"
-                    className="rounded-md px-4 sm:px-6 py-3 overflow-hidden relative group cursor-pointer border-2 font-medium bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center text-sm sm:text-base flex-1 justify-center"
+                    className="rounded-md px-4 sm:px-6 py-2.5 sm:py-3 overflow-hidden relative group cursor-pointer border-2 font-medium bg-[#1f8fce] border-[#1f8fce] text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center text-sm sm:text-base w-full sm:w-auto justify-center"
                   >
                     <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
                     <span className="relative transition duration-300 ease font-semibold">
@@ -246,7 +246,7 @@ export default function HeroSection() {
                   {/* Secondary Button: Contact Us */}
                   <Link
                     href="/contact"
-                    className="rounded-md px-4 sm:px-6 py-3 overflow-hidden relative group cursor-pointer border-2 font-medium bg-transparent border-white text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center text-sm sm:text-base flex-1 justify-center"
+                    className="rounded-md px-4 sm:px-6 py-2.5 sm:py-3 overflow-hidden relative group cursor-pointer border-2 font-medium bg-transparent border-white text-white hover:bg-white hover:text-[#1f8fce] transition-all duration-300 inline-flex items-center text-sm sm:text-base w-full sm:w-auto justify-center"
                   >
                     <span className="absolute w-64 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-20 bg-white top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
                     <span className="relative transition duration-300 ease font-semibold">
@@ -261,13 +261,13 @@ export default function HeroSection() {
       </main>
 
       {/* Slide Indicators (Dots) */}
-      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+      <div className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === currentSlide ? 'bg-[#1f8fce] w-6' : 'bg-white/50'
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+              index === currentSlide ? 'bg-[#1f8fce] w-4 sm:w-6' : 'bg-white/50'
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
