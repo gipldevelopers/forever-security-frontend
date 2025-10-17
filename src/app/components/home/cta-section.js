@@ -155,25 +155,6 @@ export default function CtaSection() {
               </Link>
             </motion.div>
 
-            {/* Additional Contact Button for Mobile */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="mt-6 sm:hidden"
-            >
-              <Link
-                href="/contact"
-                className="rounded-md px-6 py-3 overflow-hidden relative group cursor-pointer border-2 font-medium border-cyan-300 text-cyan-300 bg-transparent hover:bg-cyan-300 hover:text-[#1a1a5e] transition-all duration-300 inline-flex items-center justify-center text-base font-semibold w-full"
-              >
-                <span className="absolute w-48 h-0 transition-all duration-300 origin-center rotate-45 -translate-x-16 bg-cyan-300 top-1/2 group-hover:h-48 group-hover:-translate-y-24 ease"></span>
-                <span className="relative transition duration-300 ease font-semibold">
-                  Quick Contact
-                </span>
-              </Link>
-            </motion.div>
-
             {/* Trust Badges (Centered on mobile) */}
             <motion.div
               initial={{ opacity: 0 }}
