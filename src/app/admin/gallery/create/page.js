@@ -97,7 +97,7 @@ export default function CreateGalleryPage() {
 
       console.log('🔄 Uploading gallery images...');
 
-      const response = await fetch('https://forever-security-backend.onrender.com//api/gallery', {
+      const response = await fetch('http://localhost:5000/api/gallery', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

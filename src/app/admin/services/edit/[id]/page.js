@@ -43,7 +43,7 @@ export default function EditService() {
         return;
       }
 
-      const response = await fetch(`https://forever-security-backend.onrender.com//api/services/${params.id}`, {
+      const response = await fetch(`http://localhost:5000/api/services/${params.id}`, {
         headers: tokenManager.getAuthHeaders()
       });
 
@@ -143,7 +143,7 @@ export default function EditService() {
         seo_keywords: formData.seo_keywords
       };
 
-      const response = await fetch(`https://forever-security-backend.onrender.com//api/services/${params.id}`, {
+      const response = await fetch(`http://localhost:5000/api/services/${params.id}`, {
         method: 'PUT',
         headers: tokenManager.getAuthHeaders(),
         body: JSON.stringify(serviceData)

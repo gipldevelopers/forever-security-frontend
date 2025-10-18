@@ -33,7 +33,7 @@ export default function Services() {
         return;
       }
 
-      const response = await fetch('https://forever-security-backend.onrender.com//api/services', {
+      const response = await fetch('http://localhost:5000/api/services', {
         headers: tokenManager.getAuthHeaders()
       });
       
@@ -76,7 +76,7 @@ export default function Services() {
           return;
         }
 
-        const response = await fetch(`https://forever-security-backend.onrender.com//api/services/${id}`, {
+        const response = await fetch(`http://localhost:5000/api/services/${id}`, {
           method: 'DELETE',
           headers: tokenManager.getAuthHeaders()
         });
