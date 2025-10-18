@@ -119,7 +119,7 @@ const getImageUrl = (image) => {
       }
       
       // If it's a local path, construct the full URL
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://forever-security-backend.onrender.com/';
       const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
       return `${baseUrl}/${cleanPath}`;
     }

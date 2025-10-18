@@ -133,7 +133,7 @@ export default function CreateBlogPage() {
       console.log('📤 Sending FormData with image support...');
 
       // Use direct fetch with FormData for file upload
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/blogs`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://forever-security-backend.onrender.com/'}/api/blogs`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

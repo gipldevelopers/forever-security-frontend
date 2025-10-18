@@ -109,7 +109,7 @@ export default function Dashboard() {
 
   const fetchFallbackStats = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/dashboard`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://forever-security-backend.onrender.com/'}/api/admin/dashboard`);
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
@@ -405,7 +405,7 @@ export default function Dashboard() {
             <div>
               <p className="text-amber-800 font-medium">Backend Server Offline</p>
               <p className="text-amber-700 text-sm">
-                Using demo data. Make sure your backend is running on {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}
+                Using demo data. Make sure your backend is running on {process.env.NEXT_PUBLIC_API_URL || 'https://forever-security-backend.onrender.com/'}
               </p>
               <button
                 onClick={fetchDashboardData}
