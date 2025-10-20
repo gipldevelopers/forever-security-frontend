@@ -1,4 +1,4 @@
-// lib/api.js - Updated with better token management
+// lib/api.js - Updated with better token mnagement
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 class ApiService {
